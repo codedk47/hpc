@@ -10,3 +10,5 @@ PHP extend declared classes
 	tcpserver_io
 	tcpserver_http
 	tcpserver_ws
+	//tcpserver_ftp
+	//tcpserver_kms
