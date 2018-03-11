@@ -11,12 +11,33 @@ PHP extend declared classes
 	tcpserver_io	//标准I/O逻辑类，必须被继承
 	tcpserver_http	//基本HTTP类继承I/O类，必须被继承
 	tcpserver_ws	//基本WebSocket类继承HTTP类，必须被继承
-	
+//DEMO
+//演示 I/O 服务端
+class demo_io extends tcpserver_io
+{
+	function recv()
+	{
+		$len = $this->read($buf,128);
+		var_dump($buf);
+		$this->write($buf);
+		return TRUE;
+	}
+}
+//演示 http 服务端
+class demo_http extends tcpserver_http
+{
+ 	function recv_req()
+	{
+		$this->res_append('Content-Type:text/html; charset=utf-8');
+		$this->send('</h1>hello php server</h1>');
+ 		return $this->end();
+	}
+}
 //启动tcp服务端
 tcpserver(function()
 {
-		$this->thread_class = 'pt'; //设置逻辑线程上下文
-		$this->io_class = 'demo_http'; //设置服务器PHP逻辑处理类
+		//$this->thread_class = 'demo_thread'; //设置逻辑线程上下文
+		$this->io_class = 'demo_io'; //设置服务器PHP逻辑处理类
 		$this->concurrent_thread = 4; //设置并发行线程数量，建议服务器CPU*2(默认0由服务端自行判断)
 		$this->local_socket = 'ssl://*:8014'; //监听本地socket地址， * 代表同时监听IPv6和IPv4地址， 0.0.0.0 或 [::]
 		$this->max_connected = 1000; //服务端最大连接数，不能超过20万
