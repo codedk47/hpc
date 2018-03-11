@@ -47,7 +47,7 @@ tcpserver(function()
 		//$this->add_timer(function(){
 		//	while(1) {
 		// 		//每个2秒显示一次在线数
-		//		sleep(5);
+		//		sleep(2);
 		//		$this->console_log('Current online %d', $this->get_online());
 		//	}
 		//}, time() + 5 );
