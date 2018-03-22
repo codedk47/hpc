@@ -1,8 +1,20 @@
-## Hypertext Preprocessor Console
+#### Hypertext Preprocessor Console（hpc）
 <pre>
 该项目暂时不开源有兴趣可以加Q群（456357348）技术讨论吹牛B等-_-b
 目前服务端基础功能已经过测试免费提供使用，希望能得到大家的想法与支持
 </pre>
+#### Hypertext Preprocessor Server（hps）
+<pre>
+hps 是为了让 php 可以编写高性能的服务端而开发的，它是免费的
+基于 Windows 平台 IOCP 网络事件驱动和多线+非阻塞模式
+采用 PHP7.2 和 OpenSSL1.1.0g 源代码开发
+</pre>
+#### PHP extend declared classes
+- [thread](https://github.com/codedk47/hpc/edit/master/README.md#) (标准线程上下文类，可继承)
+- [tcpserver](https://github.com/codedk47/hpc/edit/master/README.md#) (TCP服务端主要类，不可继承)
+- [tcpserver_io](https://github.com/codedk47/hpc/edit/master/README.md#) (I/O 类，必须被继承)
+- [tcpserver_http](https://github.com/codedk47/hpc/edit/master/README.md#) (HTTP 类继承 I/O 类，必须被继承)
+- [tcpserver_ws](https://github.com/codedk47/hpc/edit/master/README.md#) (WebSocket 类继承 HTTP 类，必须被继承)
 #### 开始编写一个简单echo服务端
 ```php
 <?php
@@ -35,4 +47,4 @@ tcpserver(function()
 //一个简单的echo服务端就写好并且启动了，记住上面的规则了吗？好吧让我开始了解一下都有什么类和方法吧！
 ?>
 ```
-[TOC]
+
