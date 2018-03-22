@@ -1,8 +1,8 @@
 ## Hypertext Preprocessor Console
--------------------
-> 该项目暂时不开源有兴趣可以加Q群（456357348）技术讨论吹牛B等-_-b
+<pre>
+该项目暂时不开源有兴趣可以加Q群（456357348）技术讨论吹牛B等-_-b
 目前服务端基础功能已经过测试免费提供使用，希望能得到大家的想法与支持
-
+</pre>
 #### 开始编写一个简单echo服务端
 ```php
 <?php
@@ -29,9 +29,10 @@ class demo_io extends tcpserver_io //扩展一个标准的 I/O 类
 //启动tcp服务端
 tcpserver(function()
 {
-	$this->io_class = 'demo_io'; //设置服务端 I/O 逻辑处理类的名称，demo_io 就是刚才扩展 tcpserver_io 的逻辑处理类
-	$this->local_socket = 'tcp://*:8014'; //监听本地socket地址，* 代表同时监听IPv6和IPv4地址， 0.0.0.0 或 [::]
+	$this->io_class = 'demo_io'; //设置服务端 I/O 逻辑处理类的名称，demo_io 就是上面写好的的类
+	$this->local_socket = 'tcp://*:8014'; //本地socket地址，*代表同时监听IPv6和IPv4地址，0.0.0.0 或[::]
 }
 //一个简单的echo服务端就写好并且启动了，记住上面的规则了吗？好吧让我开始了解一下都有什么类和方法吧！
 ?>
 ```
+[TOC]
