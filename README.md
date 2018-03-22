@@ -22,7 +22,7 @@ hps 是为了让 php 可以编写高性能的服务端而开发的，它是免�
 //服务端内部所有 "tcpserver_" 开头的类都继承该类的方法 比如 HTTP 类
 class demo_io extends tcpserver_io //扩展一个标准的 I/O 类
 {
-	function __construct() //任何时候 fd 连接完成后都会调用这个函数
+	function __construct() //任何时候 fd 连接建立完成后都会调用这个函数
 	{
 		//某些类会覆盖此函数比如 HTTP 类
 		return TRUE; //任何时候在最后返回不为 true 都会立即断开链接，并且释放有关这个 fd 一切使用的上下文
@@ -34,7 +34,7 @@ class demo_io extends tcpserver_io //扩展一个标准的 I/O 类
 		$this->write($buf); //写入当前 fd 数据
 		return TRUE; //任何时候在最后返回不为 true 都会立即断开链接
 	}
-	function __destruct() //任何时候 fd 断开连接后都会调用此函数
+	function __destruct() //任何时候 fd 异常断开连接后都会调用此函数
 	{
 		//所以在这里继续向这个 fd 写数据是没用的
 	}
