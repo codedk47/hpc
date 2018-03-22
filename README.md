@@ -64,7 +64,7 @@ tcpserver(function()
 	$this->local_socket = 'tcp://*:80';
 }
 ```
-#### 演示 websocket 服务端
+#### 演示 WebSocket 服务端
 ```php
 <?php
 class demo_ws extends tcpserver_ws
