@@ -6,15 +6,16 @@
 #### Hypertext Preprocessor Server（hps）
 <pre>
 hps 是为了让 php 可以编写高性能的服务端而开发的，它是免费的
-基于 Windows 平台 IOCP 网络事件驱动和多线+非阻塞模式
+基于 Windows 平台 IOCP 网络事件驱动，多线程+非阻塞模式
 采用 PHP7.2 和 OpenSSL1.1.0g 源代码开发
 </pre>
 #### PHP extend declared classes
-- [thread](https://github.com/codedk47/hpc/edit/master/README.md#) (标准线程上下文类，可继承)
-- [tcpserver](https://github.com/codedk47/hpc/edit/master/README.md#) (TCP服务端主要类，不可继承)
-- [tcpserver_io](https://github.com/codedk47/hpc/edit/master/README.md#) (I/O 类，必须被继承)
-- [tcpserver_http](https://github.com/codedk47/hpc/edit/master/README.md#) (HTTP 类继承 I/O 类，必须被继承)
-- [tcpserver_ws](https://github.com/codedk47/hpc/edit/master/README.md#) (WebSocket 类继承 HTTP 类，必须被继承)
+- [thread](https://github.com/codedk47/hpc/edit/master/thread.md) (标准线程上下文类，可继承)
+- [tcpserver](https://github.com/codedk47/hpc/edit/master/tcpserver.md) (TCP服务端主要类，不可继承)
+- [tcpserver_io](https://github.com/codedk47/hpc/edit/master/tcpserver_io.md) (I/O 类，必须被继承)
+- [tcpserver_http](https://github.com/codedk47/hpc/edit/master/tcpserver_http.md) (HTTP 类继承 I/O 类，必须被继承)
+- [tcpserver_ws](https://github.com/codedk47/hpc/edit/master/tcpserver_ws.md) (WebSocket 类继承 HTTP 类，必须被继承)
+- 以后将加入更多的类和方法
 #### 开始编写一个简单echo服务端
 ```php
 <?php
@@ -45,6 +46,47 @@ tcpserver(function()
 	$this->local_socket = 'tcp://*:8014'; //本地socket地址，*代表同时监听IPv6和IPv4地址，0.0.0.0 或[::]
 }
 //一个简单的echo服务端就写好并且启动了，记住上面的规则了吗？好吧让我开始了解一下都有什么类和方法吧！
-?>
 ```
-
+#### 演示 HTTP 服务端
+```php
+<?php
+class demo_http extends tcpserver_http
+{
+ 	function recv_req()
+	{
+		$this->send('hello php server!!!');
+		return TRUE;
+	}
+}
+tcpserver(function()
+{
+	$this->io_class = 'demo_http';
+	$this->local_socket = 'tcp://*:80';
+}
+```
+#### 演示 websocket 服务端
+```php
+<?php
+class demo_ws extends tcpserver_ws
+{
+	function recv_frame()
+	{
+		$frame = $this->frame_content();
+		return $this->send($frame);
+	}
+}
+tcpserver(function()
+{
+	$this->io_class = 'demo_ws';
+	$this->local_socket = 'tcp://*:8014';
+}
+```
+#### 简单嘛？或许你应该去看看最上面类的手册
+<pre>
+推荐了解过程
+先了解 tcpserver 类，这个是服务端含有的功能，线程类和I/O类都是可以调用主类方法的
+接下来看 tcpserver_io 类，以后所有tcp协议都将建继承这个类的方法，也包括用户想写自己协议逻辑也必须继承这个类
+关于 thread 类，基本没什么功能，完全是为了在线程启动时候初始化一些线程上下文
+比如预先建立mysql连接，当客户端请求查询数据直接 可以调用当前线程的mysql查询，减少socket建立与mysql握手过程
+当然 thread 也可以写个死循环让它去采集数据什么的
+</pre>
