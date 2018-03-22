@@ -1,17 +1,9 @@
-# Hypertext Preprocessor Console
-## Hypertext Preprocessor Server
-#### PHP7.2 For Windows IOCP Socket Server
+## Hypertext Preprocessor Console
+-------------------
+> 该项目暂时不开源有兴趣可以加Q群（456357348）技术讨论吹牛B等-_-b
+目前服务端基础功能已经过测试免费提供使用，希望能得到大家的想法与支持
 
-该项目暂时不开源有兴趣可以加Q群（456357348）技术讨论吹牛B等-_-b
-目前服务端基础功能已经过高可用稳定测试性能可靠免费提供使用，希望能得到大家功能上扩展意见
-主要实现以下类
-PHP extend declared classes
-* thread //标准线程上下文类，可继承
-* tcpserver	//TCP服务端主要类，不可继承
-* tcpserver_io	//标准I/O逻辑类，必须被继承
-* tcpserver_http	//基本HTTP类继承I/O类，必须被继承
-* tcpserver_ws	//基本WebSocket类继承HTTP类，必须被继承
-	
+#### 开始编写一个简单echo服务端
 ```php
 <?php
 //服务端内部所有 "tcpserver_" 开头的类都继承该类的方法 比如 HTTP 类
@@ -40,6 +32,6 @@ tcpserver(function()
 	$this->io_class = 'demo_io'; //设置服务端 I/O 逻辑处理类的名称，demo_io 就是刚才扩展 tcpserver_io 的逻辑处理类
 	$this->local_socket = 'tcp://*:8014'; //监听本地socket地址，* 代表同时监听IPv6和IPv4地址， 0.0.0.0 或 [::]
 }
-//一个简单的echo服务端就写好并且启动了，记住上面的规则了吗？好吧让我开始吧！
+//一个简单的echo服务端就写好并且启动了，记住上面的规则了吗？好吧让我开始了解一下都有什么类和方法吧！
 ?>
 ```
