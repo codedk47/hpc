@@ -10,11 +10,11 @@ hps 是为了让 php 可以编写高性能的服务端而开发的，它是免�
 采用 PHP7.2 和 OpenSSL1.1.0g 源代码开发
 </pre>
 #### PHP extend declared classes
-- [thread](https://github.com/codedk47/hpc/edit/master/thread.md) (标准线程上下文类，可继承)
-- [tcpserver](https://github.com/codedk47/hpc/edit/master/tcpserver.md) (TCP服务端主要类，不可继承)
-- [tcpserver_io](https://github.com/codedk47/hpc/edit/master/tcpserver_io.md) (I/O 类，必须被继承)
-- [tcpserver_http](https://github.com/codedk47/hpc/edit/master/tcpserver_http.md) (HTTP 类继承 I/O 类，必须被继承)
-- [tcpserver_ws](https://github.com/codedk47/hpc/edit/master/tcpserver_ws.md) (WebSocket 类继承 HTTP 类，必须被继承)
+- [thread](https://github.com/codedk47/hpc/blob/master/thread.md) (标准线程上下文类，可继承)
+- [tcpserver](https://github.com/codedk47/hpc/blob/master/tcpserver.md) (TCP服务端主要类，不可继承)
+- [tcpserver_io](https://github.com/codedk47/hpc/blob/master/tcpserver_io.md) (I/O 类，必须被继承)
+- [tcpserver_http](https://github.com/codedk47/hpc/blob/master/tcpserver_http.md) (HTTP 类继承 I/O 类，必须被继承)
+- [tcpserver_ws](https://github.com/codedk47/hpc/blob/master/tcpserver_ws.md) (WebSocket 类继承 HTTP 类，必须被继承)
 - 以后将加入更多的类和方法
 #### 开始编写一个简单echo服务端
 ```php
