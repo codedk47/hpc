@@ -27,7 +27,7 @@ tcpserver(function(){
 	- void [error_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md#error_log)
 	- void [console_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md#console_log)
 	- bool [set_ssl(string $cert, string $key)](tcpserver.md#set_ssl)
-	- bool [add_timer(closure $callback[, int $timer])](tcpserver.md)
+	- bool [add_timer(closure $callback[, int $timer])](tcpserver.md#add_timer)
 	- int [get_online(void)](tcpserver.md)
 	- array [get_connects(void)](tcpserver.md)
 	- int [get_clock(void)](tcpserver.md);
@@ -171,10 +171,39 @@ class my_io_class_test extends tcpserver_io
 #### set_ssl
 <pre>
 设置服务端加密通讯证书和密钥，只有在使用 ssl 协议下服务端才真正去读取这个证书和密钥
+服务端采用的 OpenSSL 加密库，版本请看首页编译情况说明
 </pre>
 ```php
 tcpserver(function(){
-	$this->local_socket = 'ssl://*:8014';
+	//操作不区分先后顺序，不过只有设置 ssl 协议服务端才会去加载 ./myserver.cer 和 ./myserver.key
+	$this->local_socket = 'tcp://*:8014'; //不加载 ssl
+	$this->local_socket = 'ssl://*:8014'; //尝试加载 ssl，会判断是否真正设置了证书和密钥
 	$this->set_ssl('./myserver.cer', './myserver.key');
+});
+```
+#### add_timer
+<pre>
+给服务端添加一个定时器，可以理解增加计划任务，任务是在 其他线程进行执行的也称之为异步
+但是调用 add_timer 会立即创建这个线程并且挂起直到时间点触发任务
+服务端定时器是秒级的别试图它那来做高精度定时需求，但是你可以个创建出另外一个线程去做些什么不是吗？
+在没有必要的情况下千万不要在定时器里增加定时器，尤其是当一个定时器线程退出后，在刚才线程创建的定时器还在运行这个时候注意
+对代码严谨程度一定要做好，不然很容易让服务器异常退出，我尝试过捕获异常全失败了，这里比较难控制
+</pre>
+```php
+tcpserver(function(){
+	$this->add_timer(function(){ //增加一个定时器
+		$this->add_timer(function(){ //定时器触发后又增加一个定时器
+			//...
+		});
+		//这个定时器任务做完退出了，刚才床架的定时器还在运行，如果刚才创建的定时器代码又问题很难捕获异常
+		//没有必要的情况下不要这样写
+	});
+	//下面来个正常点的写法
+	$this->add_timer(function(){ //增加一个定时器
+		while(1){
+			sleep(2); //每个2秒显示一次在线数
+			$this->console_log('Current online %d', $this->get_online());
+		}
+	}, time() + 5 ); //服务器初始化完成后5秒开始运行
 });
 ```
