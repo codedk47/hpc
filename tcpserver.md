@@ -22,10 +22,10 @@ function(function(){
 	- string [$kick_timeout](tcpserver.md#kick_timeout);
 	- `/* 方法 */`
 	- void [__construct(void)](tcpserver.md#__construct)
-	- void [__destruct(void)](tcpserver.md)
-	- void [shutdown(void)](tcpserver.md)
-	- void [error_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md)
-	- void [console_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md)
+	- void __destruct(void) //目前不可用
+	- void shutdown(void) //目前不可用
+	- void [error_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md#error_log)
+	- void [console_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md#console_log)
 	- bool [set_ssl(string $cert, string $key)](tcpserver.md)
 	- bool [add_timer(closure $callback[, int $timer])](tcpserver.md)
 	- int [get_online(void)](tcpserver.md)
@@ -135,6 +135,38 @@ tcpserver(function(){
 </pre>
 ```php
 tcpserver(function(){
-	//在这里些一些对服务端操作的控制参数
+	//在这里写一些对服务端操作的控制参数
+});
+```
+#### error_log
+<pre>
+服务端控制台输出并且记录到日志
+</pre>
+```php
+class my_io_class_name extends tcpserver_io
+{
+	function __construct()
+	{
+		$this->server()->error_log('新连接被分配到 ID:%d', $this->id());
+	}
+}
+tcpserver(function(){
+	$this->io_class = 'my_io_class_name';
+});
+```
+#### console_log
+<pre>
+服务端控制台输出，与 error_log() 方法不同的是，console_log() 只显示不做记录
+</pre>
+```php
+class my_io_class_name extends tcpserver_io
+{
+	function __construct()
+	{
+		$this->server()->console_log('新连接被分配到 ID:%d', $this->id());
+	}
+}
+tcpserver(function(){
+	$this->io_class = 'my_io_class_name';
 });
 ```
