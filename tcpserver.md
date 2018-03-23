@@ -58,8 +58,17 @@ tcpserver(function(){
 #### io_class
 <pre>
 服务端 I/O 操作类，相当于每个与服务端建立的连接都是这个类实例化后的对象
+用户必须实现一个自己的 I/O 类，并且必须继承 tcpserver_io 抽象类
 </pre>
 ```php
+class my_io_class_name extends tcpserver_io
+{
+	function recv() //至少实现这个方法
+	{
+		...
+		return TRUE; //保持连接
+	}
+}
 tcpserver(function(){
 	$this->io_class = 'my_io_class_name';
 });
