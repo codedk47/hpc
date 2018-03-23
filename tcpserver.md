@@ -8,7 +8,7 @@
 	- `/* 属性 */`
 	- string [$work_root](tcpserver.md#work_root);
 	- string [$thread_class](tcpserver.md#thread_class);
-	- string [$io_class](tcpserver.md);
+	- string [$io_class](tcpserver.md#io_class);
 	- string [$concurrent_thread](tcpserver.md);
 	- string [$local_socket](tcpserver.md);
 	- int [$max_connected](tcpserver.md);
@@ -53,5 +53,14 @@ tcpserver(function(){
 ```php
 tcpserver(function(){
 	$this->thread_class = 'thread';
+});
+```
+#### io_class
+<pre>
+服务端 I/O 操作类，相当于每个与服务端建立的连接都是这个类实例化后的对象
+</pre>
+```php
+tcpserver(function(){
+	$this->io_class = 'my_io_class_name';
 });
 ```
