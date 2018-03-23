@@ -131,7 +131,7 @@ tcpserver(function(){
 	$this->kick_timeout = 8; //对于HTTP协议来说8秒钟够用了，8秒不进行收发直接取消这个I/O
 });
 ```
-#### __construct(void)
+#### __construct (void)
 <pre>
 服务端启动方法，该方法只能通过tcpserver函数回调启动
 </pre>
