@@ -28,9 +28,9 @@ tcpserver(function(){
 	- void [console_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md#console_log)
 	- bool [set_ssl(string $cert, string $key)](tcpserver.md#set_ssl)
 	- bool [add_timer(closure $callback[, int $timer])](tcpserver.md#add_timer)
-	- int [get_online(void)](tcpserver.md)
-	- array [get_connects(void)](tcpserver.md)
-	- int [get_clock(void)](tcpserver.md);
+	- int [get_online(void)](tcpserver.md#get_online)
+	- array [get_connects(void)](tcpserver.md#get_connects)
+	- int [get_clock(void)](tcpserver.md#get_clock);
 	- int [send_all(string $message)](tcpserver.md);
 	- int [send_here(array $id, string $message)](tcpserver.md);
 	- int [send_channel(string $channel, string $message)](tcpserver.md);
@@ -131,7 +131,7 @@ tcpserver(function(){
 	$this->kick_timeout = 8; //对于HTTP协议来说8秒钟够用了，8秒不进行收发直接取消这个I/O
 });
 ```
-#### __construct (void)
+#### __construct
 <pre>
 服务端启动方法，该方法只能通过tcpserver函数回调启动
 </pre>
@@ -202,8 +202,58 @@ tcpserver(function(){
 	$this->add_timer(function(){ //增加一个定时器
 		while(1){
 			sleep(2); //每个2秒显示一次在线数
-			$this->console_log('Current online %d', $this->get_online());
+			$this->console_log('当前服务端在线 %d', $this->get_online());
 		}
 	}, time() + 5 ); //服务器初始化完成后5秒开始运行
 });
+```
+#### get_online
+<pre>
+取得当前服务端连接数
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function __construct()
+	{
+		$this->server()->console_log('之前服务端在线 %d', $this->server()->get_online());
+		//注意当前连接数不含有这个连接，只有在构造函数真正返回 true 后这个连接才被加入到连接表
+		//连接表是双向同步的所以会有一定的性能影响对新连接加入到在线连接表速度
+		return TRUE;
+	}
+}
+```
+#### get_connects
+<pre>
+取得当前服务端连接id数组
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function __construct()
+	{
+		print_r($this->server()->get_connects());
+		//注意当前服务端连接id数组数不含有这个连接，只有在构造函数真正返回 true 后这个连接才被加入到连接表
+		//调用这个函数是锁表操作取得的有一定性能影响
+		return TRUE;
+	}
+}
+```
+#### get_clock
+<pre>
+取得当前服务端时钟秒级,注意只有当服务器启动完成后这个定时器才会根据系统时间更新
+做这个目的是为了不要平凡调用time()函数，没必要高精度的话就从当前服务器时钟取得当前时间戳
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function __construct()
+	{
+		$this->server()->cosnole_log('%s加入连接ID:%d',
+			date('Y-m-d H:i:s', $this->server()->get_clock()),
+			$this->id()
+		);
+		return TRUE;
+	}
+}
 ```
