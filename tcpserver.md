@@ -3,10 +3,10 @@
 <pre>
 这是一个服务端主进程类大部分线程都可以调用该类的方法，但是请勿在多线程修改这个类的属性值（可以多线程读）
 </pre>
-#### 摘要
+#### 类摘要
 - tcpserver {
 	- `/* 属性 */`
-	- string [$work_root](tcpserver.md);
+	- string [$work_root](tcpserver.md#work_root);
 	- string [$thread_class](tcpserver.md);
 	- string [$io_class](tcpserver.md);
 	- string [$concurrent_thread](tcpserver.md);
@@ -35,4 +35,5 @@
 	- mixed [cache_get(string $key)](tcpserver.md);
 	- bool [cache_del(string $key)](tcpserver.md);
 - }
-#### 说明
+----
+#### work_root
