@@ -22,8 +22,8 @@ tcpserver(function(){
 	- string [$kick_timeout](tcpserver.md#kick_timeout);
 	- `/* 方法 */`
 	- void [__construct(void)](tcpserver.md#__construct)
-	- void __destruct(void) //目前不可用
-	- void shutdown(void) //目前不可用
+	- void __destruct(void) //不可用
+	- void shutdown(void) //不可用
 	- void [error_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md#error_log)
 	- void [console_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md#console_log)
 	- bool [set_ssl(string $cert, string $key)](tcpserver.md#set_ssl)
@@ -35,12 +35,12 @@ tcpserver(function(){
 	- int [send_here(array $id, string $message)](tcpserver.md#send_all);
 	- int [send_channel(string $channel, string $message)](tcpserver.md#send_channel);
 	- bool [kick_id(int $id)](tcpserver.md#kick_id);
-	- int [sync_ctor(void)](tcpserver.md#sync_ctor);
-	- void [sync_dtor(int $sync)](tcpserver.md#sync_dtor);
-	- mixed [sync_call(int $sync, callable $callback)](tcpserver.md#sync_call);
-	- bool [cache_add(string $key, string $value)](tcpserver.md#cache_add);
-	- mixed [cache_get(string $key)](tcpserver.md#cache_get);
-	- bool [cache_del(string $key)](tcpserver.md#cache_del);
+	- int [sync_ctor(void)](tcpserver.md#sync_ctor); //实验性
+	- void [sync_dtor(int $sync)](tcpserver.md#sync_dtor); //实验性
+	- mixed [sync_call(int $sync, callable $callback)](tcpserver.md#sync_call); //实验性
+	- bool [cache_add(string $key, string $value)](tcpserver.md#cache_add); //实验性
+	- mixed [cache_get(string $key)](tcpserver.md#cache_get); //实验性
+	- bool [cache_del(string $key)](tcpserver.md#cache_del); //实验性
 - }
 ----
 #### work_root
