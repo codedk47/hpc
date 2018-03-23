@@ -17,21 +17,21 @@
 	- void [__construct(void)](tcpserver.md)
 	- void [__destruct(void)](tcpserver.md)
 	- void [shutdown(void)](tcpserver.md)
-	- void [error_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md)
-	- void [console_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md)
-	- bool [set_ssl(string $cert, string $key)](tcpserver.md)
-	- bool [add_timer(closure $callback [, int $timer])](tcpserver.md)
-	- void [get_online(void)](tcpserver.md);
-	- void [get_connects(void)](tcpserver.md);
-	- void [get_clock(void)](tcpserver.md);
-	- void [send_all(void)](tcpserver.md);
-	- void [send_here(void)](tcpserver.md);
-	- void [send_channel(void)](tcpserver.md);
-	- void [kick_id(void)](tcpserver.md);
-	- void [sync_ctor(void)](tcpserver.md);
-	- void [sync_dtor(void)](tcpserver.md);
-	- void [sync_call(void)](tcpserver.md);
-	- void [cache_add(void)](tcpserver.md);
-	- void [cache_get(void)](tcpserver.md);
-	- void [cache_del(void)](tcpserver.md);
+	- void [error_log(string [, ...])](tcpserver.md)
+	- void [console_log(string [, ...])](tcpserver.md)
+	- bool [set_ssl(string, string)](tcpserver.md)
+	- bool [add_timer(closure [, int])](tcpserver.md)
+	- int [get_online(void)](tcpserver.md)
+	- array [get_connects(void)](tcpserver.md)
+	- int [get_clock(void)](tcpserver.md);
+	- int [send_all(string)](tcpserver.md);
+	- int [send_here(array, string)](tcpserver.md);
+	- int [send_channel(string, string)](tcpserver.md);
+	- bool [kick_id(void)](tcpserver.md);
+	- int [sync_ctor(void)](tcpserver.md);
+	- void [sync_dtor(int)](tcpserver.md);
+	- mixed [sync_call(callable)](tcpserver.md);
+	- bool [cache_add(void)](tcpserver.md);
+	- mixed [cache_get(void)](tcpserver.md);
+	- bool [cache_del(void)](tcpserver.md);
 - }
