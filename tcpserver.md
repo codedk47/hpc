@@ -31,16 +31,16 @@ tcpserver(function(){
 	- int [get_online(void)](tcpserver.md#get_online)
 	- array [get_connects(void)](tcpserver.md#get_connects)
 	- int [get_clock(void)](tcpserver.md#get_clock);
-	- int [send_all(string $message)](tcpserver.md);
-	- int [send_here(array $id, string $message)](tcpserver.md);
-	- int [send_channel(string $channel, string $message)](tcpserver.md);
-	- bool [kick_id(int $id)](tcpserver.md);
-	- int [sync_ctor(void)](tcpserver.md);
-	- void [sync_dtor(int $sync)](tcpserver.md);
-	- mixed [sync_call(int $sync, callable $callback)](tcpserver.md);
-	- bool [cache_add(string $key, string $value)](tcpserver.md);
-	- mixed [cache_get(string $key)](tcpserver.md);
-	- bool [cache_del(string $key)](tcpserver.md);
+	- int [send_all(string $message)](tcpserver.md#send_all);
+	- int [send_here(array $id, string $message)](tcpserver.md#send_all);
+	- int [send_channel(string $channel, string $message)](tcpserver.md#send_channel);
+	- bool [kick_id(int $id)](tcpserver.md#kick_id);
+	- int [sync_ctor(void)](tcpserver.md#sync_ctor);
+	- void [sync_dtor(int $sync)](tcpserver.md#sync_dtor);
+	- mixed [sync_call(int $sync, callable $callback)](tcpserver.md#sync_call);
+	- bool [cache_add(string $key, string $value)](tcpserver.md#cache_add);
+	- mixed [cache_get(string $key)](tcpserver.md#cache_get);
+	- bool [cache_del(string $key)](tcpserver.md#cache_del);
 - }
 ----
 #### work_root
@@ -253,6 +253,56 @@ class my_io_class_test extends tcpserver_io
 			date('Y-m-d H:i:s', $this->server()->get_clock()),
 			$this->id()
 		);
+		return TRUE;
+	}
+}
+```
+#### send_all
+<pre>
+将数据发送给当前连接表所有连接
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function recv()
+	{
+		$len = $this->read($buf, 1024);
+		$this->server()->sed_all($buf);
+		return TRUE;
+	}
+}
+```
+#### send_here
+<pre>
+将数据发送给当前连接表指定连接id
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function recv()
+	{
+		$len = $this->read($buf, 1024);
+		$this->server()->sed_here($this->server()->get_connects(), $buf);
+		return TRUE;
+	}
+}
+```
+#### send_channel
+<pre>
+将数据发送给当前连接表指定连接频道
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function __construct()
+	{
+		$this->set_channel('灰谷森林');
+		return TRUE;
+	}
+	function recv()
+	{
+		$len = $this->read($buf, 1024);
+		$this->server()->send_channel('灰谷森林', $buf);
 		return TRUE;
 	}
 }
