@@ -21,7 +21,7 @@ function(function(){
 	- int [$max_connected](tcpserver.md#max_connected);
 	- string [$kick_timeout](tcpserver.md#kick_timeout);
 	- `/* 方法 */`
-	- void [__construct(void)](tcpserver.md)
+	- void [__construct(void)](tcpserver.md#__construct)
 	- void [__destruct(void)](tcpserver.md)
 	- void [shutdown(void)](tcpserver.md)
 	- void [error_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md)
@@ -121,10 +121,20 @@ tcpserver(function(){
 踢出长时间未进行收发操作的连接，0为不开启检测（默认是0）
 该方法是异步取消这个IOCP的队列状态，并且做清理，同样会触发抽象类 I/O 下的方法 $this->__destruct() 方法
 在不开启的情况下有些连接断线很难检测到，推荐在实际环境下一定要设置一个合适的超时时间不要用TCP的默认2小时
-这样可以防止一些僵尸连接，万一最大连接满了真正的用户却连接不上服务端
+这样可以防止一些僵尸连接，万一最大连接满了真正的用户却连接不上服务端（可以防止某些攻击和网络异常）
+踢出超时服务端会有提示但不做服务端记录保存
 </pre>
 ```php
 tcpserver(function(){
 	$this->kick_timeout = 8; //对于HTTP协议来说8秒钟够用了，8秒不进行收发直接取消这个I/O
+});
+```
+#### __construct
+<pre>
+服务端启动方法，该方法只能通过tcpserver函数回调启动
+</pre>
+```php
+tcpserver(function(){
+	//在这里些一些对服务端操作的控制参数
 });
 ```
