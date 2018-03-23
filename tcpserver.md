@@ -16,8 +16,8 @@ function(function(){
 	- string [$work_root](tcpserver.md#work_root);
 	- string [$thread_class](tcpserver.md#thread_class);
 	- string [$io_class](tcpserver.md#io_class);
-	- string [$concurrent_thread](tcpserver.md);
-	- string [$local_socket](tcpserver.md);
+	- string [$local_socket](tcpserver.md#local_socket);
+	- int [$concurrent_thread](tcpserver.md#concurrent_thread);
 	- int [$max_connected](tcpserver.md);
 	- string [$kick_timeout](tcpserver.md);
 	- `/* 方法 */`
@@ -78,5 +78,29 @@ class my_io_class_name extends tcpserver_io
 }
 tcpserver(function(){
 	$this->io_class = 'my_io_class_name';
+});
+```
+#### local_socket
+<pre>
+服务端绑定的本地socket地址，注意协议用ssl服务端将判断是否加载证书其他请用tcp协议(默认tcp://*:8014)
+</pre>
+```php
+tcpserver(function(){
+	$this->local_socket = 'tcp://0.0.0.0:80';
+});
+```
+#### concurrent_thread
+<pre>
+服务端并发线程，（默认是当前服务器CPU核心数,最大不能超过当前服务器CPU核心数x4）
+设置这个并发数量有一定技巧
+对于复杂逻辑同步操作比较多可以设置最大线程
+对于简单逻辑可以设置当前服务器CPU核心数
+比如你有一个收发文件的逻辑或者等待其他计算结果的逻辑需要很多时间，
+同时又必须保证其他用户可以与服务端进行操作，当然线程最大化了，不然（CPU挂起也是浪费）
+还有需要根据服务端I/O密集程度和数据包大小的收发量来考量最终设置结果，简单缺会影响到并发量的一个设置
+</pre>
+```php
+tcpserver(function(){
+	$this->concurrent_thread = 4;
 });
 ```
