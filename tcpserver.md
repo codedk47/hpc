@@ -14,13 +14,13 @@
 	- int [$max_connected](tcpserver.md);
 	- string [$kick_timeout](tcpserver.md);
 	- `/* 方法 */`
-	- void [__construct](tcpserver.md)(void)
-	- void [__destruct](tcpserver.md)(void)
-	- void [shutdown](tcpserver.md)(void)
-	- void [error_log](tcpserver.md)(string $format [, mixed $args [, mixed $... ]])
-  - void [console_log](tcpserver.md)(string $format [, mixed $args [, mixed $... ]])
-	- bool [set_ssl](tcpserver.md)(string $cert, string $key)
-	- bool [add_timer](tcpserver.md)(closure $callback [, int $timer])
+	- void [__construct(void)](tcpserver.md)
+	- void [__destruct(void)](tcpserver.md)
+	- void [shutdown(void)](tcpserver.md)
+	- void [error_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md)
+	- void [console_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md)
+	- bool [set_ssl(string $cert, string $key)](tcpserver.md)
+	- bool [add_timer(closure $callback [, int $timer])](tcpserver.md)
 	- void [get_online(void)](tcpserver.md);
 	- void [get_connects(void)](tcpserver.md);
 	- void [get_clock(void)](tcpserver.md);
