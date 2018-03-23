@@ -4,7 +4,7 @@
 这是一个服务端主进程类大部分线程都可以调用该类的方法，但是请勿在多线程修改这个类的属性值（可以多线程读）
 服务端只能通过tcpserver函数回调启动
 比如
-function(function(){
+tcpserver(function(){
 	$this->io_class = 'my_io_class_test';
 	$this->concurrent_thread = 32;
 	$this->local_socket = 'tcp://0.0.0.0:80';
@@ -26,7 +26,7 @@ function(function(){
 	- void shutdown(void) //目前不可用
 	- void [error_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md#error_log)
 	- void [console_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md#console_log)
-	- bool [set_ssl(string $cert, string $key)](tcpserver.md)
+	- bool [set_ssl(string $cert, string $key)](tcpserver.md#set_ssl)
 	- bool [add_timer(closure $callback[, int $timer])](tcpserver.md)
 	- int [get_online(void)](tcpserver.md)
 	- array [get_connects(void)](tcpserver.md)
@@ -84,6 +84,7 @@ tcpserver(function(){
 #### local_socket
 <pre>
 服务端绑定的本地socket地址，注意协议用ssl服务端将判断是否加载证书其他请用tcp协议(默认tcp://*:8014)
+指定绑地址定如 0.0.0.0 或 [::]，*代表同时监听IPv6和IPv4地址
 </pre>
 ```php
 tcpserver(function(){
@@ -166,4 +167,14 @@ class my_io_class_test extends tcpserver_io
 		return TRUE;
 	}
 }
+```
+#### set_ssl
+<pre>
+设置服务端加密通讯证书和密钥，只有在使用 ssl 协议下服务端才真正去读取这个证书和密钥
+</pre>
+```php
+tcpserver(function(){
+	$this->local_socket = 'ssl://*:8014';
+	$this->set_ssl('./myserver.cer', './myserver.key');
+});
 ```
