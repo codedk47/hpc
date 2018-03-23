@@ -5,7 +5,7 @@
 服务端只能通过tcpserver函数回调启动
 比如
 function(function(){
-	$this->io_class = 'my_io_class_name';
+	$this->io_class = 'my_io_class_test';
 	$this->concurrent_thread = 32;
 	$this->local_socket = 'tcp://0.0.0.0:80';
 });
@@ -68,16 +68,17 @@ tcpserver(function(){
 用户必须实现一个自己的 I/O 类，并且必须继承 tcpserver_io 抽象类
 </pre>
 ```php
-class my_io_class_name extends tcpserver_io
+class my_io_class_test extends tcpserver_io
 {
 	function recv() //至少实现这个方法
 	{
+		$len = $this->read($buf, 1024);
 		//一大堆乱七八糟操作
 		return TRUE; //保持连接
 	}
 }
 tcpserver(function(){
-	$this->io_class = 'my_io_class_name';
+	$this->io_class = 'my_io_class_test';
 });
 ```
 #### local_socket
@@ -143,30 +144,26 @@ tcpserver(function(){
 服务端控制台输出并且记录到日志
 </pre>
 ```php
-class my_io_class_name extends tcpserver_io
+class my_io_class_test extends tcpserver_io
 {
 	function __construct()
 	{
 		$this->server()->error_log('新连接被分配到 ID:%d', $this->id());
+		return TRUE;
 	}
 }
-tcpserver(function(){
-	$this->io_class = 'my_io_class_name';
-});
 ```
 #### console_log
 <pre>
 服务端控制台输出，与 error_log() 方法不同的是，console_log() 只显示不做记录
 </pre>
 ```php
-class my_io_class_name extends tcpserver_io
+class my_io_class_test extends tcpserver_io
 {
 	function __construct()
 	{
 		$this->server()->console_log('新连接被分配到 ID:%d', $this->id());
+		return TRUE;
 	}
 }
-tcpserver(function(){
-	$this->io_class = 'my_io_class_name';
-});
 ```
