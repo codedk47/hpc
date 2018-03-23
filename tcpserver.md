@@ -72,7 +72,7 @@ class my_io_class_name extends tcpserver_io
 {
 	function recv() //至少实现这个方法
 	{
-		...
+		//一大堆乱七八糟操作
 		return TRUE; //保持连接
 	}
 }
