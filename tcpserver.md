@@ -18,8 +18,8 @@ function(function(){
 	- string [$io_class](tcpserver.md#io_class);
 	- string [$local_socket](tcpserver.md#local_socket);
 	- int [$concurrent_thread](tcpserver.md#concurrent_thread);
-	- int [$max_connected](tcpserver.md);
-	- string [$kick_timeout](tcpserver.md);
+	- int [$max_connected](tcpserver.md#max_connected);
+	- string [$kick_timeout](tcpserver.md#kick_timeout);
 	- `/* 方法 */`
 	- void [__construct(void)](tcpserver.md)
 	- void [__destruct(void)](tcpserver.md)
@@ -103,5 +103,28 @@ tcpserver(function(){
 ```php
 tcpserver(function(){
 	$this->concurrent_thread = 4;
+});
+```
+#### max_connected
+<pre>
+这个就比较简单了，这个就是设置最大连接数的，最大不能超过20万（默认1000）
+服务端采用的是静态socket表，一次向操作系统申请最大连接数个IOCP结构体并且初始化，做异步处理
+抽象类 I/O 下的方法 $this->id() 其实就是这个IOCP在这个socket静态表的索引
+</pre>
+```php
+tcpserver(function(){
+	$this->max_connected = 4;
+});
+```
+#### kick_timeout
+<pre>
+踢出长时间未进行收发操作的连接，0为不开启检测（默认是0）
+该方法是异步取消这个IOCP的队列状态，并且做清理，同样会触发抽象类 I/O 下的方法 $this->__destruct() 方法
+在不开启的情况下有些连接断线很难检测到，推荐在实际环境下一定要设置一个合适的超时时间不要用TCP的默认2小时
+这样可以防止一些僵尸连接，万一最大连接满了真正的用户却连接不上服务端
+</pre>
+```php
+tcpserver(function(){
+	$this->kick_timeout = 8; //对于HTTP协议来说8秒钟够用了，8秒不进行收发直接取消这个I/O
 });
 ```
