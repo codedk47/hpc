@@ -3,7 +3,7 @@
 <pre>
 这是一个服务端主进程类大部分线程都可以调用该类的方法，但是请勿在多线程修改这个类的属性值（可以多线程读）
 </pre>
-#### 类摘要
+#### 摘要
 - tcpserver {
 	- `/* 属性 */`
 	- string [$work_root](tcpserver.md);
@@ -27,7 +27,7 @@
 	- int [send_all(string $message)](tcpserver.md);
 	- int [send_here(array $id, string $message)](tcpserver.md);
 	- int [send_channel(string $channel, string $message)](tcpserver.md);
-	- bool [kick_id(void)](tcpserver.md);
+	- bool [kick_id(int $id)](tcpserver.md);
 	- int [sync_ctor(void)](tcpserver.md);
 	- void [sync_dtor(int $sync)](tcpserver.md);
 	- mixed [sync_call(int $sync, callable $callback)](tcpserver.md);
@@ -35,3 +35,4 @@
 	- mixed [cache_get(string $key)](tcpserver.md);
 	- bool [cache_del(string $key)](tcpserver.md);
 - }
+#### 说明
