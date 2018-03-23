@@ -7,7 +7,7 @@
 - tcpserver {
 	- `/* 属性 */`
 	- string [$work_root](tcpserver.md#work_root);
-	- string [$thread_class](tcpserver.md);
+	- string [$thread_class](tcpserver.md#thread_class);
 	- string [$io_class](tcpserver.md);
 	- string [$concurrent_thread](tcpserver.md);
 	- string [$local_socket](tcpserver.md);
@@ -37,3 +37,21 @@
 - }
 ----
 #### work_root
+<pre>
+设置线程上下文当前服务端路径目录或者绝对路径目录（默认当前服务端路径下的work）
+注意该文件夹必须存在否则服务端无法启动
+</pre>
+```php
+tcpserver(function(){
+	$this->work_root = 'work';
+});
+```
+#### thread_class
+<pre>
+当服务端启动时会实例化该类，在这里用户可以加入自己对这个线程的上下文控制（默认thread）
+</pre>
+```php
+tcpserver(function(){
+	$this->thread_class = 'thread';
+});
+```
