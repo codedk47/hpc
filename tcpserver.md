@@ -307,3 +307,102 @@ class my_io_class_test extends tcpserver_io
 	}
 }
 ```
+#### kick_id
+<pre>
+向这个连接id发送关闭发送信号
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function __construct()
+	{
+		$this->server()->kick_id(0);
+		return TRUE;
+	}
+}
+```
+#### sync_ctor
+<pre>
+构造一个同步地址，同步机制使用的是 Windows 的 CRITICAL_SECTION 结构体
+返回这个申请内存成功后的地址，失败返回 0
+</pre>
+```php
+tcpserver(function(){
+	$this->sync_id = $this->sync_ctor(); //创建同步地址
+});
+```
+#### sync_dtor
+<pre>
+销毁一个同步地址的内存地址并且释放这段内存
+</pre>
+```php
+tcpserver(function(){
+	if($this->sync_id = $this->sync_ctor()) //创建同步地址
+	{
+		$this->sync_dtor($this->sync_id); //销毁同步地址
+	}
+});
+```
+#### sync_call
+<pre>
+调用一个同步地址回调一个函数
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function recv()
+	{
+		$len = $this->read($buf, 1024);
+		$this->server()->sync_call($this->server()->sync_id, function() //调用同步地址
+		{
+			//确保这里代码是同步与 $this->server()->sync_id 地址操作的
+			//比如并发10个人抢一个座位，这个操作呢显得有位重要，不能乱排队以此进行谁先到给谁
+		});
+		return TRUE;
+	}
+}
+tcpserver(function(){
+	$this->io_class = 'my_io_class_test';
+	$this->sync_id = $this->sync_ctor(); //创建同步地址
+});
+```
+#### cache_add
+<pre>
+同步向服务端缓存表里增加一个key=value，成功返回 true，失败返回 false
+</pre>
+```php
+tcpserver(function(){
+	$this->io_class = 'my_io_class_test';
+	$this->cache_add('key_name', 'hello php');
+});
+```
+#### cache_get
+<pre>
+同步查询服务端缓存表里一个key值，成功返回该key的value，失败返回 NULL 类型
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function recv()
+	{
+		$len = $this->read($buf, 1024);
+		$this->write($this->server()->cache_get('key_name'));
+		return TRUE;
+	}
+}
+tcpserver(function(){
+	$this->io_class = 'my_io_class_test';
+	$this->cache_add('key_name', 'hello php');
+});
+```
+#### cache_del
+<pre>
+同步删除服务端缓存表里一个key值，成功返回 true，失败返回 false
+</pre>
+```php
+tcpserver(function(){
+	$this->io_class = 'my_io_class_test';
+	$this->cache_add('key_name', 'hello php');
+	$this->cache_del('key_name');
+});
+```
