@@ -42,5 +42,5 @@
 	- bool [send_403(void)](tcpserver_http.md#send_403) //发送 403 状态
 	- bool [send_404(void)](tcpserver_http.md#send_404) //发送 404 状态
 	- bool [send(string $buffer)](tcpserver_http.md#send) //请不要覆盖该方法，发送 http 内容
-	- void recv(void) //请不要覆盖该方法，内部基本 http 逻辑机制
+	- void recv(void) //请不要覆盖该方法，内部基本 http 逻辑机制（以后可能更加开放 http 抽象类而预留）
 - }
