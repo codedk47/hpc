@@ -357,7 +357,6 @@ class my_io_class_test extends tcpserver_io
 		{
 			//注意的是当有可读事件会马上返回，并不会真的等到8秒
 			$len = $this->read($buf, 1024);
-			
 			return TRUE;
 		}
 		return FALSE;
