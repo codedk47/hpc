@@ -13,34 +13,34 @@ tcpserver(function(){
 #### 类摘要
 - tcpserver {
 	- `/* 属性 */`
-	- string [$work_root](tcpserver.md#work_root)
-	- string [$thread_class](tcpserver.md#thread_class)
-	- string [$io_class](tcpserver.md#io_class)
-	- string [$local_socket](tcpserver.md#local_socket)
-	- int [$concurrent_thread](tcpserver.md#concurrent_thread)
-	- int [$max_connected](tcpserver.md#max_connected)
-	- string [$kick_timeout](tcpserver.md#kick_timeout)
+	- string [$work_root](tcpserver.md#work_root) //设置线程上下文目录（默认 work，当前服务端目录下）
+	- string [$thread_class](tcpserver.md#thread_class) //设置线程上下文初始化类（默认 thread）
+	- string [$io_class](tcpserver.md#io_class) //设置 I/O 逻辑处理类
+	- string [$local_socket](tcpserver.md#local_socket) //绑定本地socket地址（默认 tcp://\*:8014）
+	- int [$concurrent_thread](tcpserver.md#concurrent_thread) //设置并发行线程数量（默认 0 当前服务器CPU核心数）
+	- int [$max_connected](tcpserver.md#max_connected) //服务端最大连接数（默认 1000）
+	- string [$kick_timeout](tcpserver.md#kick_timeout) //踢除长时间未数据收发的连接（默认 0 为不开启检测）
 	- `/* 方法 */`
-	- void [__construct(void)](tcpserver.md#__construct)
+	- void [__construct(void)](tcpserver.md#__construct) //服务端启动函数
 	- void __destruct(void) //不可用
 	- void shutdown(void) //不可用
-	- void [error_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md#error_log)
-	- void [console_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md#console_log)
-	- bool [set_ssl(string $cert, string $key)](tcpserver.md#set_ssl)
-	- bool [add_timer(closure $callback[, int $timer])](tcpserver.md#add_timer)
-	- int [get_online(void)](tcpserver.md#get_online)
-	- array [get_connects(void)](tcpserver.md#get_connects)
-	- int [get_clock(void)](tcpserver.md#get_clock)
-	- int [send_all(string $message)](tcpserver.md#send_all)
-	- int [send_here(array $id, string $message)](tcpserver.md#send_all)
-	- int [send_channel(string $channel, string $message)](tcpserver.md#send_channel)
-	- bool [kick_id(int $id)](tcpserver.md#kick_id)
-	- int [sync_ctor(void)](tcpserver.md#sync_ctor) //实验性
-	- void [sync_dtor(int $sync)](tcpserver.md#sync_dtor) //实验性
-	- mixed [sync_call(int $sync, callable $callback)](tcpserver.md#sync_call) //实验性
-	- bool [cache_add(string $key, string $value)](tcpserver.md#cache_add) //实验性
-	- mixed [cache_get(string $key)](tcpserver.md#cache_get) //实验性
-	- bool [cache_del(string $key)](tcpserver.md#cache_del) //实验性
+	- void [error_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md#error_log) //打印消息并记录到日志
+	- void [console_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md#console_log) //打印消息
+	- bool [set_ssl(string $cert, string $key)](tcpserver.md#set_ssl) //设置加密连接证书和密钥
+	- bool [add_timer(closure $callback[, int $timer])](tcpserver.md#add_timer) //添加定时器
+	- int [get_online(void)](tcpserver.md#get_online) //获取当前连接数
+	- array [get_connects(void)](tcpserver.md#get_connects) //获取当前所有连接 id
+	- int [get_clock(void)](tcpserver.md#get_clock) //获取当前服务端时钟（秒）
+	- int [send_all(string $message)](tcpserver.md#send_all) //向所有连接发送数据
+	- int [send_here(array $id, string $message)](tcpserver.md#send_all) //向指定连接 id 发送数据
+	- int [send_channel(string $channel, string $message)](tcpserver.md#send_channel) //向指定频道连接发送数据
+	- bool [kick_id(int $id)](tcpserver.md#kick_id)  //向一个连接 id 发送一个关闭发送信号
+	- int [sync_ctor(void)](tcpserver.md#sync_ctor) //实验性，构造一个同步地址
+	- void [sync_dtor(int $sync)](tcpserver.md#sync_dtor) //实验性，析构一个同步地址
+	- mixed [sync_call(int $sync, callable $callback)](tcpserver.md#sync_call) //实验性，调用一个同步地址回调函数
+	- bool [cache_add(string $key, string $value)](tcpserver.md#cache_add) //实验性，同步缓存增加一条数据
+	- mixed [cache_get(string $key)](tcpserver.md#cache_get) //实验性，同步缓存查询一条数据
+	- bool [cache_del(string $key)](tcpserver.md#cache_del) //实验性，同步缓存删除一条数据
 - }
 ----
 #### work_root
