@@ -10,9 +10,9 @@
 	- void __construct(void)
 	- void __destruct(void)
 	- object [server(void)](thread.md#server)
-	- int [id(string $key)](thread.md#id)
-	- bool [ctor(string $key)](thread.md#ctor)
-	- void [dtor(string $key)](thread.md#dtor)
+	- int [id(void)](thread.md#id)
+	- bool [ctor(void)](thread.md#ctor)
+	- void [dtor(void)](thread.md#dtor)
 - }
 #### server
 <pre>
