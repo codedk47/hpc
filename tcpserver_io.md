@@ -18,27 +18,27 @@ class my_io_class_test extends tcpserver_io
 - **abstract** tcpserver {
 	- **abstract** recv(void) //用户必须实现这个方法
 	- `/* 方法 */`
-	- void [__construct(void)](tcpserver_io.md#__construct)
-	- void [__destruct(void)](tcpserver_io.md#__destruct)
-	- void [__set(string $key, string $value)](tcpserver_io.md#__set)
-	- mixed [__get(string $key)](tcpserver_io.md#__get)
-	- bool [__isset(string $key)](tcpserver_io.md#__isset)
-	- void [__unset(string $key)](tcpserver_io.md#__unset)
-	- int [peek(string &$buffer, int $length)](tcpserver_io.md#peek)
-	- int [read(string &$buffer, int $length)](tcpserver_io.md#read)
-	- int [write(string $buffer)](tcpserver_io.md#write)
-	- bool [sendfile(string &$filename)](tcpserver_io.md#sendfile)
-	- bool [end(void)](tcpserver_io.md#end)
-	- object [thread(void)](tcpserver_io.md#thread)
-	- object [server(void)](tcpserver_io.md#server)
-	- mixed [sync(callable $callback)](tcpserver_io.md#sync)
-	- int [id(void)](tcpserver_io.md#id)
-	- string [ip_info(void)](tcpserver_io.md#ip_info)
-	- string [ip_addr(void)](tcpserver_io.md#ip_addr)
-	- string [ip_port(void)](tcpserver_io.md#ip_port)
-	- int [set_channel(string $name)](tcpserver_io.md#set_channel)
-	- int [send_them(string $buffer)](tcpserver_io.md#send_them)
-	- bool [wait_recv(int $timeout)](tcpserver_io.md#wait_recv) //实验性
+	- void [__construct(void)](tcpserver_io.md#__construct) //连接构造函数
+	- void [__destruct(void)](tcpserver_io.md#__destruct) //连接析构函数
+	- void [__set(string $key, string $value)](tcpserver_io.md#__set) //（php魔术方法）添加一条记录
+	- mixed [__get(string $key)](tcpserver_io.md#__get) //（php魔术方法）查询一条记录
+	- bool [__isset(string $key)](tcpserver_io.md#__isset) //（php魔术方法）判断记录是否存在
+	- void [__unset(string $key)](tcpserver_io.md#__unset) //（php魔术方法）删除一条记录
+	- int [peek(string &$buffer, int $length)](tcpserver_io.md#peek) //窥视连接数据
+	- int [read(string &$buffer, int $length)](tcpserver_io.md#read) //读取连接数据
+	- int [write(string $buffer)](tcpserver_io.md#write) //写入连接数据
+	- bool [sendfile(string &$filename)](tcpserver_io.md#sendfile) //向连接发送文件
+	- bool [end(void)](tcpserver_io.md#end) //向连接发送关闭发送信号
+	- object [thread(void)](tcpserver_io.md#thread) //获取当前线程实例化对象
+	- object [server(void)](tcpserver_io.md#server) //获取服务端实例化对象
+	- mixed [sync(callable $callback)](tcpserver_io.md#sync) //同步回调
+	- int [id(void)](tcpserver_io.md#id) //获取连接的 id
+	- string [ip_info(void)](tcpserver_io.md#ip_info) //获取连接的 IP 信息
+	- string [ip_addr(void)](tcpserver_io.md#ip_addr) //获取连接的 IP 地址
+	- string [ip_port(void)](tcpserver_io.md#ip_port) //获取连接的 IP 端口
+	- int [set_channel(string $name)](tcpserver_io.md#set_channel) //设置连接频道
+	- int [send_them(string $buffer)](tcpserver_io.md#send_them) //发送数据给除当前连接以外的所有连接
+	- bool [wait_recv(int $timeout)](tcpserver_io.md#wait_recv) //实验性，阻塞等待可读取事件
 - }
 #### __construct
 <pre>
