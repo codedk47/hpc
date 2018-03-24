@@ -27,10 +27,10 @@ tcpserver(function(){
 	- void [error_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md#error_log) //打印消息并记录到日志
 	- void [console_log(string $format [, mixed $args [, mixed $... ]])](tcpserver.md#console_log) //打印消息
 	- bool [set_ssl(string $cert, string $key)](tcpserver.md#set_ssl) //设置加密连接证书和密钥
-	- bool [add_timer(closure $callback[, int $timer])](tcpserver.md#add_timer) //添加定时器
+	- bool [add_timer(closure $callback[, int $timer = 0])](tcpserver.md#add_timer) //添加定时器
 	- int [get_online(void)](tcpserver.md#get_online) //获取当前连接数
 	- array [get_connects(void)](tcpserver.md#get_connects) //获取当前所有连接 id
-	- int [get_clock(void)](tcpserver.md#get_clock) //获取当前服务端时钟（秒）
+	- int [get_clock(void)](tcpserver.md#get_clock) //获取当前服务端时间戳（秒）
 	- int [send_all(string $message)](tcpserver.md#send_all) //向所有连接发送数据
 	- int [send_here(array $id, string $message)](tcpserver.md#send_all) //向指定连接 id 发送数据
 	- int [send_channel(string $channel, string $message)](tcpserver.md#send_channel) //向指定频道连接发送数据
