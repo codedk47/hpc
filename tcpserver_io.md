@@ -8,7 +8,7 @@
 比如
 class my_io_class_test extends tcpserver_io
 {
-  public $name = '阿尔萨斯'; //这个属性并不会随着实例化后更新到 fd 的上下文
+	public $name = '阿尔萨斯'; //这个属性并不会随着实例化后更新到 fd 的上下文
 }
 不过可以在构造函数里写属性，连接建立完成后总是会调用 __construct 方法
 还有这个类的 __construct 和 __destruct 方法除外其他方法都是不可覆盖的
@@ -32,9 +32,9 @@ class my_io_class_test extends tcpserver_io
 ```php
 class my_io_class_test extends tcpserver_io
 {
-  function __construct()
-  {
-    $this->name = '阿尔萨斯'; //这样写才有效
-  }
+	function __construct()
+	{
+		$this->name = '阿尔萨斯'; //这样写才有效
+	}
 }
 ```
