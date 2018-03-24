@@ -13,6 +13,7 @@
 - **abstract** tcpserver_http **extends** [tcpserver_io](tcpserver_io.md) {
 	- **abstract** recv_req(void) //用户必须实现这个方法
 	- `/* 方法 */`
+	- bool recv(void) //请不要覆盖该方法，内部基本 http 逻辑机制（以后可能更加开放 http 抽象类而预留）
 	- string [req_head([bool $all = false])](tcpserver_http.md#req_head) //获取请求头内容
 	- string [req_method(void)](tcpserver_http.md#req_method) //获取请求方法如 GET POST HEAD 等
 	- string [req_url(void)](tcpserver_http.md#req_url) //获取请求 URL
@@ -42,5 +43,4 @@
 	- bool [send_403(void)](tcpserver_http.md#send_403) //发送 403 状态
 	- bool [send_404(void)](tcpserver_http.md#send_404) //发送 404 状态
 	- bool [send(string $buffer)](tcpserver_http.md#send) //请不要覆盖该方法，发送 http 内容
-	- void recv(void) //请不要覆盖该方法，内部基本 http 逻辑机制（以后可能更加开放 http 抽象类而预留）
 - }
