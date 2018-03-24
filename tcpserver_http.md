@@ -13,7 +13,7 @@
 - **abstract** tcpserver_http **extends** [tcpserver_io](tcpserver_io.md) {
 	- **abstract** recv_req(void) //用户必须实现这个方法
 	- `/* 方法 */`
-	- bool recv(void) //请不要覆盖该方法，内部基本 http 逻辑机制（以后可能更加开放 http 抽象类而预留）
+	- bool recv(void) //内部核心逻辑机制（请不要调用和覆盖该方法，可能更加开放 http 抽象类而预留）
 	- string [req_head([bool $all = false])](tcpserver_http.md#req_head) //获取请求头内容
 	- string [req_method(void)](tcpserver_http.md#req_method) //获取请求方法如 GET POST HEAD 等
 	- string [req_url(void)](tcpserver_http.md#req_url) //获取请求 URL
