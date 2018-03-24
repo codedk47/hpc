@@ -20,13 +20,13 @@ class my_io_class_test extends tcpserver_io
 	- void [__construct(void)](tcpserver_io.md#__construct)
 	- void [__destruct(void)](tcpserver_io.md#__destruct)
 	- void [__set(string $key, string $value)](tcpserver_io.md#__set)
-  - void [__get(string $key)](tcpserver_io.md#__get)
-  - void [__isset(string $key)](tcpserver_io.md#__isset)
-  - void [__unset(string $key)](tcpserver_io.md#__unset)
+	- void [__get(string $key)](tcpserver_io.md#__get)
+	- void [__isset(string $key)](tcpserver_io.md#__isset)
+	- void [__unset(string $key)](tcpserver_io.md#__unset)
 	- bool [wait_recv(string $key)](tcpserver_io.md#wait_recv); //实验性
 - }
-<pre>
 #### __construct
+<pre>
 新的连接建立完成后会调用这个方法
 </pre>
 ```php
