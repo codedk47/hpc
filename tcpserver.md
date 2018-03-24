@@ -2,13 +2,6 @@
 #### 简介
 <pre>
 这是一个服务端主进程类大部分线程都可以调用该类的方法，但是请勿在多线程修改这个类的属性值（可以多线程读）
-服务端只能通过tcpserver函数回调启动
-比如
-tcpserver(function(){
-	$this->io_class = 'my_io_class_test';
-	$this->concurrent_thread = 32;
-	$this->local_socket = 'tcp://0.0.0.0:80';
-});
 </pre>
 #### 类摘要
 - tcpserver {
@@ -133,10 +126,14 @@ tcpserver(function(){
 ```
 #### __construct
 <pre>
-服务端启动方法，该方法只能通过tcpserver函数回调启动
+服务端启动方法
 </pre>
 ```php
 tcpserver(function(){
+	//在这里写一些对服务端操作的控制参数
+});
+//或者
+new tcpserver(function(){
 	//在这里写一些对服务端操作的控制参数
 });
 ```
