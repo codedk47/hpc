@@ -26,8 +26,17 @@ class my_io_class_test extends tcpserver_io
 	- int [peek(string &$buffer, int $length)](tcpserver_io.md#peek)
 	- int [read(string &$buffer, int $length)](tcpserver_io.md#read)
 	- int [write(string &$buffer)](tcpserver_io.md#write)
-	
-	
+	- bool [sendfile(string &$filename)](tcpserver_io.md#sendfile)
+	- bool [end(void)](tcpserver_io.md#end)
+	- object [thread(void)](tcpserver_io.md#thread)
+	- object [server(void)](tcpserver_io.md#server)
+	- mixed [sync(void)](tcpserver_io.md#sync)
+	- int [id(void)](tcpserver_io.md#id)
+	- string [ip_info(void)](tcpserver_io.md#ip_info)
+	- string [ip_addr(void)](tcpserver_io.md#ip_addr)
+	- string [ip_port(void)](tcpserver_io.md#ip_port)
+	- int [set_channel(void)](tcpserver_io.md#set_channel)
+	- int [send_them(void)](tcpserver_io.md#send_them)
 	- bool [wait_recv(string $key)](tcpserver_io.md#wait_recv); //实验性
 - }
 #### __construct
@@ -166,6 +175,36 @@ class my_io_class_test extends tcpserver_io
 	{
 		$len = $this->write('最近还好吗？');
 		return TRUE;
+	}
+}
+```
+#### sendfile
+<pre>
+发送一个文件，成功返回 true 失败返回 false
+注意这个方法在 tcp 模式下调用 Windows 的 TransmitFile API
+在 ssl 模式下使用的是通常的循环拷贝写入的做法
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function recv()
+	{
+		$len = $this->sendfile('./av-998.avi');
+		return TRUE;
+	}
+}
+```
+#### end
+<pre>
+向这个 fd 写入关闭发送通知，只关闭发送，成功返回 true 失败返回 false
+注意这里仅关闭发送，还可以收到这个 fd 发来的数据，但是服务端却不可以在向这个 fd 继续写数据
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function recv()
+	{
+		return $this->end(); //可以用来做控制机制
 	}
 }
 ```
