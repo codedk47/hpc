@@ -21,7 +21,7 @@
 	- array [req_querys(void)](tcpserver_http.md#req_querys) //获取请求 URL 所有参数
 	- string [req_ver(void)](tcpserver_http.md#req_ver) //获取请求 HTTP 版本
 	- mixed [req_find(string $header_name)](tcpserver_http.md#req_find) //查询请求头
-	- bool [req_gzip_on(void)](tcpserver_http.md#req_gzip_on) //判断请求师傅支持 gzip
+	- bool [req_gzip_on(void)](tcpserver_http.md#req_gzip_on) //判断请求是否支持 gzip
 	- bool [req_etag_eq(string $etag)](tcpserver_http.md#req_etag_eq) //判断请求 etag 是否一致
 	- mixed [get_cookie(string $name)](tcpserver_http.md#get_cookie) //获得请求 cookie 的 name 值
 	- array [get_cookies(void)](tcpserver_http.md#get_cookies) //获取所有 cookie 值
@@ -35,7 +35,7 @@
 	- bool [res_length(int $content_length)](tcpserver_http.md#res_length) //响应头信息添加内容长度
 	- bool [res_type(string $content_type)](tcpserver_http.md#res_type) //响应头信息添加内容类型
 	- bool [res_etag(string $etag)](tcpserver_http.md#res_etag) //响应头信息添加 etag 值
-	- bool [set_cookie(string $name[, string $value[, int $expire[, string $path[, string $domain[, bool $secure[, bool $httponly]]]]]])](tcpserver_http.md#set_cookie) //响应头添加 cookie 设置
+	- bool [set_cookie(string $name [, string $value = '' [, int $expire = 0 [, string $path = '' [, string $domain = '' [, bool $secure = false [, bool $httponly = false ]]]]]]](tcpserver_http.md#set_cookie) //响应头添加 cookie 设置
 	- bool [res_send(void)](tcpserver_http.md#res_send) //发送响应头信息
 	- bool [send_file(string $filename)](tcpserver_http.md#send_file) //发送文件
 	- bool [send_echo(callable $callback)](tcpserver_http.md#send_echo) //发送回调里 php 所有输出到 http 内容
