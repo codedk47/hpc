@@ -15,7 +15,7 @@
 	- **abstract** recv_frame(void) //用户必须实现这个方法
 	- recv_req(void) //用户选择实现这个方法
 	- `/* 方法 */`
-	- bool recv(void) //类内部基本逻辑实现，含解码帧（不要调用）
+	- bool recv(void) //内部核心逻辑机制（不要调用，服务端会自动解码帧）
 	- bool [send(string $content[, int $opcode = 1[, bool $fin = true]])](tcpserver_ws.md#send) //发送一个数据给客户端
 	- array [frame_hi(void)](tcpserver_ws.md#frame_hi) //帧头信息
 	- bool [frame_fin(void)](tcpserver_ws.md#frame_fin) //帧头信息 fin （表示是否是尾帧）
