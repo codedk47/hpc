@@ -14,6 +14,7 @@
 	- **abstract** recv_req(void) //用户必须实现这个方法
 	- `/* 方法 */`
 	- bool recv(void) //内部核心逻辑机制（请不要调用和覆盖该方法，可能更加开放 http 抽象类而预留）
+	- bool send(string $buffer) //内部核心发送机制（请不要覆盖该方法，发送 http 内容）
 	- string [req_head([bool $all = false])](tcpserver_http.md#req_head) //获取请求头内容
 	- string [req_method(void)](tcpserver_http.md#req_method) //获取请求方法如 GET POST HEAD 等
 	- string [req_url(void)](tcpserver_http.md#req_url) //获取请求 URL
@@ -35,6 +36,7 @@
 	- bool [res_append(string $header_content)](tcpserver_http.md#res_append) //响应头信息添加内容
 	- bool [res_length(int $content_length)](tcpserver_http.md#res_length) //响应头信息添加内容长度
 	- bool [res_type(string $content_type)](tcpserver_http.md#res_type) //响应头信息添加内容类型
+	- bool [res_gzip(void)](tcpserver_http.md#res_gzip) //响应头信息添加 gzip
 	- bool [res_etag(string $etag)](tcpserver_http.md#res_etag) //响应头信息添加 etag 值
 	- bool [set_cookie(string $name [, string $value = '' [, int $expire = 0 [, string $path = '' [, string $domain = '' [, bool $secure = false [, bool $httponly = false ]]]]]]](tcpserver_http.md#set_cookie) //响应头添加 cookie 设置
 	- bool [res_send(void)](tcpserver_http.md#res_send) //发送响应头信息
@@ -42,11 +44,11 @@
 	- bool [send_echo(callable $callback)](tcpserver_http.md#send_echo) //发送回调里 php 所有输出到 http 内容
 	- bool [send_403(void)](tcpserver_http.md#send_403) //发送 403 状态
 	- bool [send_404(void)](tcpserver_http.md#send_404) //发送 404 状态
-	- bool [send(string $buffer)](tcpserver_http.md#send) //请不要覆盖该方法，发送 http 内容
 - }
 #### req_head
 <pre>
 获取当前请求头内容，参数为 true 时返回完整内容，为 false 从头信息开始地方返回
+req_ 开头的方法都是跟请求头有关的操作，res_ 开头的方法都是跟响应头有关的操作
 </pre>
 ```php
 class simple_http_server extends tcpserver_http
@@ -322,6 +324,228 @@ class simple_http_server extends tcpserver_http
 	function recv_req()
 	{
 		$this->send($this->get_content_buffer()); //千万不要将上传的大文件打印到屏幕，你懂的
+		return TRUE;
+	}
+}
+```
+#### res_head
+<pre>
+取得响应头全部内容，res_ 开头的方法都是跟响应头有关的操作
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$this->send($this->res_head());
+		return TRUE;
+	}
+}
+```
+#### res_append
+<pre>
+响应头信息添加内容，如果服务端含有的响应头添加尽量使用服务端提供的响应头方法
+比如 res_length、res_type、res_gzip、res_etag 等，可以避免重复添加
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$this->res_append('X-Address-Info: ' . $this->ip_info());
+		$this->send('看看头信息是否有 X-Address-Info 项');
+		return TRUE;
+	}
+}
+```
+#### res_length
+<pre>
+响应头信息添加内容长度，服务 send 方法使用的是兼容 chunked 发送
+所以用户并不必自己手动增加内容长度控制，除非用户需要一次发送固定长度数据
+下面给一个列子
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$content = '我是很长的内容';
+		$this->res_length(strlen($content)); //响应头信息添加内容长度
+		$this->res_send(); //发送响应头信息
+		$this->send($content); //发送内容，这样就绕开了 chunked 方式
+		return TRUE;
+	}
+}
+```
+#### res_type
+<pre>
+响应头信息添加内容类型，服务端默认文档类型 text/html; charset=utf-8
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$this->res_type('text/plain; charset=utf-8');
+		$this->send("文本信息\n换行显示");
+		return TRUE;
+	}
+}
+```
+#### res_gzip
+<pre>
+响应头信息添加 gzip
+注意 gzip + chunked 方式，并不是分段压缩的必须整段压缩后分段发送
+在 wikipedia 上有对于 chunked + gzip 是不是分段压缩的明确说明
+HTTP servers sometimes use
+compression (gzip or deflate) to allow reducing time spent for
+transmission. Chunked transfer encoding can be used to delimit
+parts of the compressed object. In this case, it is worth
+noting that the chunks are not individually compressed.Instead, the complete payload is compressed and
+the output of the compression process is chunked using the scheme
+described in this article.
+看完上面让我们也来个骚操作，gzip + chunked 发送，这个机制只有在某些情况下才显得很有效率，并不适用于所有情况下
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$content = '需要被发送的内容';
+		if($this->req_gzip_on()) //先判断对方浏览器支不支持，别一顿乱操作发现白搭
+		{
+			$this->res_gzip(); //响应头信息添加 gzip
+			$this->send(gzencode($content)); //gzip 压缩后发送
+		}
+		else
+		{
+			$this->send($content);
+		}
+		return TRUE;
+	}
+}
+```
+#### res_type
+<pre>
+响应头信息添加内容类型，服务端默认文档类型 text/html; charset=utf-8
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$this->res_type('text/plain; charset=utf-8');
+		$this->send("文本信息\n换行显示");
+		return TRUE;
+	}
+}
+```
+#### res_etag
+<pre>
+响应头信息添加 etag 值
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$content = '需要发送的内容';
+		$this->res_etag($content); //响应头信息添加 etag 值
+		$this->send($content);
+		return TRUE;
+	}
+}
+```
+#### res_send
+<pre>
+发送响应头信息
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$this->res_send(); //发送响应头信息
+		return TRUE;
+	}
+}
+```
+#### set_cookie
+<pre>
+响应头添加 cookie 设置，该方法参数于 php 的 setcookie 一致
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$this->set_cookie('name', 'value');
+		$this->send('添加了 cookie');
+		return TRUE;
+	}
+}
+```
+#### send_file
+<pre>
+发送文件，该方法会自动判断请求 etag 值后在选择是否继续发送，成功返回 true，失败 false
+如果 etag 一致后发送 304 状态也表示发送成功返回 true
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$this->send_file('./filename.html');
+		return TRUE;
+	}
+}
+```
+#### send_echo
+<pre>
+送回调里 php 所有输出到 http 内容，就是捕获回调函数里所有输出定向到 http 的 send 方法
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		//$this->send_echo('phpinfo'); //发送 php 信息页面
+		$this->send_echo(function(){
+			print_r($this->req_querys()); //打印所有请求询问参数
+			print_r($this->req_cookies()); //打印所有 cookie 值
+			//所有输出定向到 http 的 send 方法
+		});
+		return TRUE;
+	}
+}
+```
+#### send_403
+<pre>
+发送 403 状态
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$this->send_403(); //页面风格类似 apache
+		return TRUE;
+	}
+}
+```
+#### send_404
+<pre>
+发送 404 状态
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		if(!$this->send_file($this->req_file()))
+		{
+			$this->send_403();
+		}
 		return TRUE;
 	}
 }
