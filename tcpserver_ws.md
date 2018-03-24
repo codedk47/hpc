@@ -1,7 +1,7 @@
 ## tcpserver_ws
 #### 简介
 <pre>
-这个类继承于 tcpserver_http 这是一个 websocket 服务端功能抽象类，用户可以继承该类来完成一个自己的 websocket 服务端
+这个类继承于 tcpserver_http 类，这是一个 websocket 服务端功能抽象类，用户可以继承该类来完成一个自己的 websocket 服务端
 该类已覆盖了 tcpserver_http 类的 recv 和 send 方法
 同时用户也必须实现 recv_frame 方法，websocket 服务端在接受到一个帧后会触发这个方法
 注意这个这个类的 send 方法回自动调用编码帧完成编码
