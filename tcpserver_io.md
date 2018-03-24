@@ -12,7 +12,7 @@ class my_io_class_test extends tcpserver_io
 }
 不过可以在构造函数里写属性，连接建立完成后总是会调用 __construct 方法
 还有这个类的 __construct 和 __destruct 方法除外其他方法都是不可覆盖的
-比如
+任何时候服务端触发的方法在最终返回结果不为 true 总是立即断开连接并且释放这个连接的上下文
 </pre>
 #### 类摘要
 - tcpserver {
@@ -27,7 +27,7 @@ class my_io_class_test extends tcpserver_io
 - }
 #### __construct
 <pre>
-新的连接建立完成后会调用这个方法
+任何时候新的连接建立完成后会调用这个方法
 </pre>
 ```php
 class my_io_class_test extends tcpserver_io
@@ -35,6 +35,20 @@ class my_io_class_test extends tcpserver_io
 	function __construct()
 	{
 		$this->name = '阿尔萨斯'; //这样写才有效
+		return TRUE; //这个是控制机制，可以实现用户的登录之类的判断
+	}
+}
+```
+#### __destruct
+<pre>
+任何时候连断开后总是会调用这个方法
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function __destruct()
+	{
+		$this->server()->console_log('ID:%d 断开了连接', $this->id());
 	}
 }
 ```
