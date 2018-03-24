@@ -16,8 +16,8 @@ class my_io_class_test extends tcpserver_io
 </pre>
 #### 类摘要
 - **abstract** tcpserver {
-	- `/* 方法 */`
 	- **abstract** recv(void) //用户必须实现这个方法
+	- `/* 方法 */`
 	- void [__construct(void)](tcpserver_io.md#__construct)
 	- void [__destruct(void)](tcpserver_io.md#__destruct)
 	- void [__set(string $key, string $value)](tcpserver_io.md#__set)
