@@ -74,10 +74,9 @@ php 的魔术方法，保存这个连接上下文key=value的方法，目前只�
 ```php
 class my_io_class_test extends tcpserver_io
 {
-	function recv()
+	function __construct()
 	{
-		$len = $this->read($buf, 1024);
-		$this->name = $buf;
+		$this->name = '阿尔萨斯';
 		return TRUE;
 	}
 }
@@ -89,10 +88,15 @@ php 的魔术方法，查询这个上下文key，失败返回 NULL
 ```php
 class my_io_class_test extends tcpserver_io
 {
+	function __construct()
+	{
+		$this->name = '阿尔萨斯';
+		return TRUE;
+	}
 	function recv()
 	{
 		$len = $this->read($buf, 1024);
-		$this->name = $buf;
+		$this->write($this->name . $buf);
 		return TRUE;
 	}
 }
