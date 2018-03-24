@@ -13,13 +13,13 @@ tcpserver(function(){
 #### 类摘要
 - tcpserver {
 	- `/* 属性 */`
-	- string [$work_root](tcpserver.md#work_root);
-	- string [$thread_class](tcpserver.md#thread_class);
-	- string [$io_class](tcpserver.md#io_class);
-	- string [$local_socket](tcpserver.md#local_socket);
-	- int [$concurrent_thread](tcpserver.md#concurrent_thread);
-	- int [$max_connected](tcpserver.md#max_connected);
-	- string [$kick_timeout](tcpserver.md#kick_timeout);
+	- string [$work_root](tcpserver.md#work_root)
+	- string [$thread_class](tcpserver.md#thread_class)
+	- string [$io_class](tcpserver.md#io_class)
+	- string [$local_socket](tcpserver.md#local_socket)
+	- int [$concurrent_thread](tcpserver.md#concurrent_thread)
+	- int [$max_connected](tcpserver.md#max_connected)
+	- string [$kick_timeout](tcpserver.md#kick_timeout)
 	- `/* 方法 */`
 	- void [__construct(void)](tcpserver.md#__construct)
 	- void __destruct(void) //不可用
@@ -30,17 +30,17 @@ tcpserver(function(){
 	- bool [add_timer(closure $callback[, int $timer])](tcpserver.md#add_timer)
 	- int [get_online(void)](tcpserver.md#get_online)
 	- array [get_connects(void)](tcpserver.md#get_connects)
-	- int [get_clock(void)](tcpserver.md#get_clock);
-	- int [send_all(string $message)](tcpserver.md#send_all);
-	- int [send_here(array $id, string $message)](tcpserver.md#send_all);
-	- int [send_channel(string $channel, string $message)](tcpserver.md#send_channel);
-	- bool [kick_id(int $id)](tcpserver.md#kick_id);
-	- int [sync_ctor(void)](tcpserver.md#sync_ctor); //实验性
-	- void [sync_dtor(int $sync)](tcpserver.md#sync_dtor); //实验性
-	- mixed [sync_call(int $sync, callable $callback)](tcpserver.md#sync_call); //实验性
-	- bool [cache_add(string $key, string $value)](tcpserver.md#cache_add); //实验性
-	- mixed [cache_get(string $key)](tcpserver.md#cache_get); //实验性
-	- bool [cache_del(string $key)](tcpserver.md#cache_del); //实验性
+	- int [get_clock(void)](tcpserver.md#get_clock)
+	- int [send_all(string $message)](tcpserver.md#send_all)
+	- int [send_here(array $id, string $message)](tcpserver.md#send_all)
+	- int [send_channel(string $channel, string $message)](tcpserver.md#send_channel)
+	- bool [kick_id(int $id)](tcpserver.md#kick_id)
+	- int [sync_ctor(void)](tcpserver.md#sync_ctor) //实验性
+	- void [sync_dtor(int $sync)](tcpserver.md#sync_dtor) //实验性
+	- mixed [sync_call(int $sync, callable $callback)](tcpserver.md#sync_call) //实验性
+	- bool [cache_add(string $key, string $value)](tcpserver.md#cache_add) //实验性
+	- mixed [cache_get(string $key)](tcpserver.md#cache_get) //实验性
+	- bool [cache_del(string $key)](tcpserver.md#cache_del) //实验性
 - }
 ----
 #### work_root
