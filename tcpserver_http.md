@@ -4,7 +4,7 @@
 这个类继承于 tcpserver_io 类，这是一个 http 服务端功能抽象类，用户可以继承该类来完成一个自己的 http 服务端
 该类已覆盖了 tcpserver_io 类的 __construct 和 recv 方法
 同时用户也必须实现 recv_req 方法，http 服务端在接受到一个请求后会触发这个方法
-这个 http 类是完全自己写的没有含有第三方库目前只支持 HTTP/1.0 和 1.1
+这个 http 类目前只支持 HTTP/1.0 和 1.1
 注意这个这个类会在收到完整的 http 头部请求后立即调用 recv_req 而非等待后续 body 数据
 后续数据必须通过 get_content 函数来取得
 同时这样也增加一定的安全和快速回应性，用户可以在代码中控制 body 数据 比如 POST 数据大小等不同逻辑的限制
@@ -44,3 +44,180 @@
 	- bool [send_404(void)](tcpserver_http.md#send_404) //发送 404 状态
 	- bool [send(string $buffer)](tcpserver_http.md#send) //请不要覆盖该方法，发送 http 内容
 - }
+#### req_head
+<pre>
+获取当前请求头内容，参数为 true 时返回完整内容，为 false 从头信息开始地方返回
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$this->send($this->req_head(TRUE));
+		return TRUE;
+	}
+}
+```
+#### req_method
+<pre>
+获取当前请求头方法
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$this->send('用户请求方法是：' . $this->req_method());
+		return TRUE;
+	}
+}
+```
+#### req_url
+<pre>
+获取请求 URL
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$this->send('用户请求 URL 是：' . $this->req_url());
+		return TRUE;
+	}
+}
+```
+#### req_file
+<pre>
+获取请求 URL 文件，参数是默认文档文件名，它只返回一个虚拟的地址，这个函数并不会去判断文件是否真实存在
+当路径以 / 结尾时候总是将参数的文档名作为文件名，默认 index.html
+这个函数可以配合 send_file 一起使用
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$this->send_file($this->req_file('default.html'));
+		return TRUE;
+	}
+}
+```
+#### req_query
+<pre>
+获取请求 URL 某个参数，可选参数为字段名，如果找到返回字段名的值，其他返回 NULL
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$this->send($this->req_query('key') ?? '没有key字段');
+		return TRUE;
+	}
+}
+```
+#### req_querys
+<pre>
+获取请求 URL 所有参数
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		print_r($this->req_querys());
+		return TRUE;
+	}
+}
+```
+#### req_ver
+<pre>
+获取请求 HTTP 版本，类似 HTTP/1.0 或者  HTTP/1.1
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$this->send('当前请求的 HTTP 协议版本是：' . $this->req_ver());
+		return TRUE;
+	}
+}
+```
+#### req_find
+<pre>
+查询请求头，找到返回该头的内容断，没找到返回 NULL
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		//对于请求头并不是所有浏览器和某些爬虫或者个人写的数据抓去等都会设置某些头
+		//在查询头尽量做好判断
+		$result = $this->req_find('Accept-Language') ?? '火星语？';
+		$this->send('当前请求语言是：' . $result);
+		return TRUE;
+	}
+}
+```
+#### req_gzip_on
+<pre>
+判断请求是否支持 gzip 压缩协议，这里是弱判断 Accept-Encoding: gzip 测试几个浏览器都是小写
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$result = $this->req_gzip_on() ? '开启' : '关闭';
+		$this->send('当前请求 gzip 支持：' . $result);
+		return TRUE;
+	}
+}
+```
+#### req_etag_eq
+<pre>
+判断请求 etag 是否一致，这个是 HTTP/1.1 增加的 etag 头，这个函数可以判断是否是某个 hash 值
+hash 值是 times33 算法
+可以用来判断控制一些数据发送，节省带宽流量，不过目前用户必须实现自己的 304 状态
+下面我给一个简单的列子来控制数据发送
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$content = '复活吧！我的勇士！';
+		$this->res_etag($content);
+		if($this->req_etag_eq($content)) //判断 etag 是否一致
+		{
+			//一致的话我们直接发送 304 状态
+			//通知对方我就不传送下面的数据了，你自己吧缓存拿出来用吧我和你的内容是一样的
+			$this->res_status('HTTP/1.1 304 Not Modified');
+			$this->res_send(); //发送响应头即可
+		}
+		else
+		{
+			//如果不一致我们就发送数据
+			$this->send($content);
+		}
+		return TRUE;
+	}
+}
+```
+#### get_cookie
+<pre>
+获取所有 cookie 字段值，可选参数字段，找到返回字段内容，其他返回 NULL
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$result = $this->get_cookie('name') ?? '没找到 name 内容';
+		$this->send('Cookie: ' . $result);
+		return TRUE;
+	}
+}
+```
