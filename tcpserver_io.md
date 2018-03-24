@@ -15,8 +15,9 @@ class my_io_class_test extends tcpserver_io
 任何时候服务端触发的方法在最终返回结果不为 true 总是立即断开连接并且释放这个连接的上下文
 </pre>
 #### 类摘要
-- tcpserver {
+- **abstract** tcpserver {
 	- `/* 方法 */`
+	- **abstract** recv(void) //用户必须实现这个方法
 	- void [__construct(void)](tcpserver_io.md#__construct)
 	- void [__destruct(void)](tcpserver_io.md#__destruct)
 	- void [__set(string $key, string $value)](tcpserver_io.md#__set)
