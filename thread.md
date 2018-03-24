@@ -7,12 +7,12 @@
 #### 类摘要
 - thread {
 	- `/* 方法 */`
-	- void __construct(void)
-	- void __destruct(void)
-	- object [server(void)](thread.md#server)
-	- int [id(void)](thread.md#id)
-	- bool [ctor(void)](thread.md#ctor)
-	- void [dtor(void)](thread.md#dtor)
+	- void __construct(void) //内部构造函数
+	- void __destruct(void) //内部析构函数
+	- object [server(void)](thread.md#server) //获取服务端实例化对象
+	- int [id(void)](thread.md#id) //获取当前线程 id
+	- bool [ctor(void)](thread.md#ctor) //用户构造函数
+	- void [dtor(void)](thread.md#dtor) //用户析构函数
 - }
 #### server
 <pre>
