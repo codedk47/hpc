@@ -28,7 +28,7 @@
 - }
 #### send
 <pre>
-发送内容给当前连接
+发送内容给当前连接，成功返回 true 失败返回 false
 </pre>
 ```php
 class myser extends tcpserver_ws
