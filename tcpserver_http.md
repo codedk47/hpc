@@ -256,18 +256,18 @@ class simple_http_server extends tcpserver_http
 				//当数据接收完毕时候会回调这个函数
 				$this->send('接收内容大小：' . $this->get_content_offset());
 				
-				$content_raw = $this->get_content_buffer(); //获取原始内容
+				$post_raw = $this->get_content_buffer(); //获取原始内容
 				
-				$content_format = $this->get_content_format(); //获取格式化后的内容
+				$post = $this->get_content_format(); //获取格式化后的内容
 				
-				print_r($content_format); //打印格式化后的内容
+				print_r($post); //打印格式化后的内容
 				
-				if(isset($content_format['uploaded_file']) //判断时候有这个字段并且是文件上传
-					&& get_class($content_format['uploaded_file']) == 'tcpserver_http_uploaded_file'){
-					//如果用户表单有个 uploaded_file 字段并且是文件提交那么 uploaded_file 在服务端就是对象化了
-					//$content_format['uploaded_file'] 这个是一个上传文件，这里是对象化了，里面有自己的方法
-					$content_format['uploaded_file']->move_to('./' . time() . '.up'); //移动文件
-					$content_format['uploaded_file']->image_type(); //判断图像类型
+				if(isset($post['uploaded_file']) //判断时候有这个字段并且是文件上传
+					&& is_object($post['uploaded_file'])){
+					//如果用户表单有个 uploaded_file 字段并且是文件提交那么在服务端就是对象化了
+					//$post['uploaded_file'] 这个是一个上传文件是对象化里面有自己的方法
+					$post['uploaded_file']->move_to('./' . time() . '.up'); //移动文件
+					$post['uploaded_file']->image_type(); //判断图像类型
 					//以后这个这个上传对象可能会加入跟多的方法
 				}
 				return TRUE;
@@ -314,7 +314,7 @@ class simple_http_server extends tcpserver_http
 获取请求后续内容当前内容并且做格式化，如果当前读取的内容偏移值不等于内容长度，函数不执行任何操作
 注意当调用这个函数时候，如果有文件上传，这个时候才会吧上传文件创建出 php 临时文件
 并且用户还可以选择一次控制权，对这个对象流进行判断检测等操作，最终可以选择移动文件到哪里
-否则当请求结束内存和零时文件也会释放和销毁
+否则当请求结束内存和临时文件也会释放和销毁
 </pre>
 ```php
 class simple_http_server extends tcpserver_http
