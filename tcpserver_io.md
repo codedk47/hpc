@@ -25,19 +25,19 @@ class my_io_class_test extends tcpserver_io
 	- void [__unset(string $key)](tcpserver_io.md#__unset)
 	- int [peek(string &$buffer, int $length)](tcpserver_io.md#peek)
 	- int [read(string &$buffer, int $length)](tcpserver_io.md#read)
-	- int [write(string &$buffer)](tcpserver_io.md#write)
+	- int [write(string $buffer)](tcpserver_io.md#write)
 	- bool [sendfile(string &$filename)](tcpserver_io.md#sendfile)
 	- bool [end(void)](tcpserver_io.md#end)
 	- object [thread(void)](tcpserver_io.md#thread)
 	- object [server(void)](tcpserver_io.md#server)
-	- mixed [sync(void)](tcpserver_io.md#sync)
+	- mixed [sync(callable $callback)](tcpserver_io.md#sync)
 	- int [id(void)](tcpserver_io.md#id)
 	- string [ip_info(void)](tcpserver_io.md#ip_info)
 	- string [ip_addr(void)](tcpserver_io.md#ip_addr)
 	- string [ip_port(void)](tcpserver_io.md#ip_port)
 	- int [set_channel(void)](tcpserver_io.md#set_channel)
 	- int [send_them(void)](tcpserver_io.md#send_them)
-	- bool [wait_recv(string $key)](tcpserver_io.md#wait_recv); //实验性
+	- bool [wait_recv(int $timeout)](tcpserver_io.md#wait_recv); //实验性
 - }
 #### __construct
 <pre>
@@ -205,6 +205,162 @@ class my_io_class_test extends tcpserver_io
 	function recv()
 	{
 		return $this->end(); //可以用来做控制机制
+	}
+}
+```
+#### thread
+<pre>
+获取当前线程实例化对象
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function recv()
+	{
+		print_r($this->thread());
+		return TRUE;
+	}
+}
+```
+#### server
+<pre>
+获取服务端实例化对象
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function recv()
+	{
+		print_r($this->server());
+		return TRUE;
+	}
+}
+```
+#### sync
+<pre>
+同步调用回调一个函数
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function recv()
+	{
+		$result = $this->sync(function($num){
+			return $num;
+		}, 123);
+		return TRUE;
+	}
+}
+```
+#### id
+<pre>
+取得当前 fd 的 id， id 范围是从 0 到最大连接数减1
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function recv()
+	{
+		$this->id();
+		return TRUE;
+	}
+}
+```
+#### ip_info
+<pre>
+取得当前 fd 的 ip 协议信息
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function recv()
+	{
+		echo $this->ip_info(), "\n";
+		return TRUE;
+	}
+}
+```
+#### ip_addr
+<pre>
+取得当前 fd 的 ip 协议地址，它是总是返回16进制32长度的字符串
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function recv()
+	{
+		echo $this->ip_addr(), "\n";
+		return TRUE;
+	}
+}
+```
+#### ip_port
+<pre>
+取得当前 fd 的 ip 协议端口，它是总是返回16进制4长度的字符串
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function recv()
+	{
+		echo $this->ip_port(), "\n";
+		return TRUE;
+	}
+}
+```
+#### set_channel
+<pre>
+设置当前 fd 所在频道，返回设置频道字符串的 hash 值 int 类型
+注意这里使用的 php 内部的 hash 算法也是 times33 算法
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function __construct()
+	{
+		$this->set_channel('诺森德');
+		return TRUE;
+	}
+}
+```
+#### send_them
+<pre>
+把数据发送给除当前 fd 以外的所有连接
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function recv()
+	{
+		$this->send_them('嗨！大家好');
+		return TRUE;
+	}
+}
+```
+#### wait_recv
+<pre>
+等待当前 fd 有数据接收，有数据接收返回 true，其他返回 false
+可以理解为阻塞等待读取，不过多了一个超时设置，并且这个超时最大是 65535 秒
+这个函数是实验性质，可能在未来的版本中移除，实在想不出有什么情况下会用到，又怕用到的时候没有所以暂时留下了
+如果说很多地方需要那么我只能说你服务端逻辑方式有点问题，换种思路试试，不过有时候还真能解决一些头疼的问题
+这里使用的是 Windows 的 WSAEventSelect 和 WaitForSingleObject API
+注意的是当有可读事件会马上返回
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function recv()
+	{
+		$len = $this->read($buf, 1024);
+		//...
+		if($this->wait_recv(8)) //最多给你8秒钟考虑时间，注意这里线挂起的，这个线程就这么被无情的霸占了
+		{
+			//注意的是当有可读事件会马上返回，并不会真的等到8秒
+			$len = $this->read($buf, 1024);
+			
+			return TRUE;
+		}
+		return FALSE;
 	}
 }
 ```
