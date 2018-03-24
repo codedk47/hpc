@@ -37,7 +37,7 @@ class my_io_class_test extends tcpserver_io
 	- string [ip_port(void)](tcpserver_io.md#ip_port)
 	- int [set_channel(string $name)](tcpserver_io.md#set_channel)
 	- int [send_them(string $buffer)](tcpserver_io.md#send_them)
-	- bool [wait_recv(int $timeout)](tcpserver_io.md#wait_recv); //实验性
+	- bool [wait_recv(int $timeout)](tcpserver_io.md#wait_recv) //实验性
 - }
 #### __construct
 <pre>
