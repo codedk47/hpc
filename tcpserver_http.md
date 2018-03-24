@@ -221,3 +221,108 @@ class simple_http_server extends tcpserver_http
 	}
 }
 ```
+#### get_cookies
+<pre>
+获取所有 cookie 值
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		print_r($this->get_cookies());
+		return TRUE;
+	}
+}
+```
+#### get_content
+<pre>
+获取请求后续内容如 POST 上传文件等，这个方法机制最好配合 return 一起实现，并且在回调里写后续输入内容后的控制
+后续内容是根据对方请求内容长度来申请内存的，所以用户可以在逻辑代码中何时加入 get_content 方法显得尤为重要
+当后续内容输入偏移等于文档长度会调用回调，用户可以在那里处理最终结果
+下面是一个表单提交处理，用户自己实现一个表单提交页面，这里只是服务端代码
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		if($this->req_file()=='/uploaded')
+		{
+			//在这之前尽量不要有任何内容输出
+			//注意这里我是 return 这个方法的
+			return $this->get_content(3200000000,function() //测试接收3G大小数据
+			{
+				//当数据接收完毕时候会回调这个函数
+				$this->send('接收内容大小：' . $this->get_content_offset());
+				
+				$content_raw = $this->get_content_buffer(); //获取原始内容
+				
+				$content_format = $this->get_content_format(); //获取格式化后的内容
+				
+				print_r($content_format); //打印格式化后的内容
+				
+				if(isset($content_format['uploaded_file']) //判断时候有这个字段并且是文件上传
+					&& get_class($content_format['uploaded_file']) == 'tcpserver_http_uploaded_file'){
+					//如果用户表单有个 uploaded_file 字段并且是文件提交那么 uploaded_file 在服务端就是对象化了
+					//$content_format['uploaded_file'] 这个是一个上传文件，这里是对象化了，里面有自己的方法
+					$content_format['uploaded_file']->move_to('./' . time() . '.up'); //移动文件
+					$content_format['uploaded_file']->image_type(); //判断图像类型
+					//以后这个这个上传对象可能会加入跟多的方法
+				}
+				return TRUE;
+			});
+		}
+		else
+		{
+			$this->send_file('upload.html'); //用户自己写一个表单提交页面
+		}
+		return TRUE;
+	}
+}
+```
+#### get_content_offset
+<pre>
+获取请求后续内容当前读取偏移值，它总是能返回当前读取的偏移值而不是内容总长度
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$this->send('当前请求后续输入内容偏移值：' . $this->get_content_offset());
+		return TRUE;
+	}
+}
+```
+#### get_content_buffer
+<pre>
+获取请求后续内容当前读取的内容，它总是返回当前已经读取到的原始数据
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$this->send($this->get_content_buffer()); //千万不要将上传的大文件打印到屏幕，你懂的
+		return TRUE;
+	}
+}
+```
+#### get_content_format
+<pre>
+获取请求后续内容当前内容并且做格式化，如果当前读取的内容偏移值不等于内容长度，函数不执行任何操作
+注意当调用这个函数时候，如果有文件上传，这个时候才会吧上传文件创建出 php 临时文件
+并且用户还可以选择一次控制权，对这个对象流进行判断检测等操作，最终可以选择移动文件到哪里
+否则当请求结束内存和零时文件也会释放和销毁
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$this->send($this->get_content_buffer()); //千万不要将上传的大文件打印到屏幕，你懂的
+		return TRUE;
+	}
+}
+```
