@@ -15,4 +15,14 @@
 	- **abstract** recv_frame(void) //用户必须实现这个方法
 	- recv_req(void) //用户选择实现这个方法
 	- `/* 方法 */`
+	- bool recv(void) //类内部基本逻辑实现，含解码帧（不要调用）
+	- bool [send(string $content[, int $opcode = 1[, bool $fin = true]])](tcpserver_ws.md#send) //发送一个数据给客户端
+	- array [frame_hi(void)](tcpserver_ws.md#frame_hi) //帧头信息
+	- bool [frame_fin(void)](tcpserver_ws.md#frame_fin) //帧头信息 fin （表示是否是尾帧）
+	- bool [frame_rsv(int $rsv)](tcpserver_ws.md#frame_rsv) //帧头信息 rsv
+	- int [frame_opcode(void)](tcpserver_ws.md#frame_opcode) //帧头信息 opcode （ 0 - 15 ）
+	- bool [frame_mask(void)](tcpserver_ws.md#frame_mask) //帧头信息 是否有 mask
+	- int [frame_length(void)](tcpserver_ws.md#frame_length) //帧内容长度
+	- string [frame_content(void)](tcpserver_ws.md#frame_content) //帧内容
+	- string [encode_frame(string $content[, int $opcode = 1[, bool $fin = true]])](tcpserver_ws.md#encode_frame) //将内容编码成帧
 - }
