@@ -27,7 +27,7 @@ class my_io_class_test extends tcpserver_io
 	- int [peek(string &$buffer, int $length)](tcpserver_io.md#peek) //窥视连接数据
 	- int [read(string &$buffer, int $length)](tcpserver_io.md#read) //读取连接数据
 	- int [write(string $buffer)](tcpserver_io.md#write) //写入连接数据
-	- bool [sendfile(string &$filename)](tcpserver_io.md#sendfile) //向连接发送文件
+	- bool [sendfile(string $filename)](tcpserver_io.md#sendfile) //向连接发送文件
 	- bool [end(void)](tcpserver_io.md#end) //向连接发送关闭发送信号
 	- object [thread(void)](tcpserver_io.md#thread) //获取当前线程实例化对象
 	- object [server(void)](tcpserver_io.md#server) //获取服务端实例化对象
