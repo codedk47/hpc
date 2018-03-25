@@ -5,17 +5,17 @@
 </pre>
 #### Hypertext Preprocessor Server（hps）
 <pre>
-hps 是为了让 php 可以编写高性能的服务端而开发的，它是免费的
+hps 是为了让 php 可以编写高性能的服务端而使用纯c语言开发的
 基于 Windows 平台 IOCP 网络事件驱动，多线程+非阻塞模式
-采用 PHP7.2 和 OpenSSL1.1.0g 源代码开发
+采用 PHP7.2.3 和 OpenSSL1.1.0g 源代码编译
 </pre>
-- [下载 hpc-1.1.2-VC15-x64](https://github.com/codedk47/hpc/raw/master/hpc-1.1.2-VC15-x64.zip)
+- [下载 hpc-1.1.2-VC15-x64.zip](https://github.com/codedk47/hpc/raw/master/hpc-1.1.2-VC15-x64.zip)
 #### PHP extend declared classes
-- [thread](https://github.com/codedk47/hpc/blob/master/thread.md) (标准线程上下文类，可继承)
-- [tcpserver](https://github.com/codedk47/hpc/blob/master/tcpserver.md) (TCP服务端主要类，不可继承)
-- [tcpserver_io](https://github.com/codedk47/hpc/blob/master/tcpserver_io.md) (I/O 类，必须被继承)
-- [tcpserver_http](https://github.com/codedk47/hpc/blob/master/tcpserver_http.md) (HTTP 类继承 I/O 类，必须被继承)
-- [tcpserver_ws](https://github.com/codedk47/hpc/blob/master/tcpserver_ws.md) (WebSocket 类继承 HTTP 类，必须被继承)
+- [thread](thread.md) (标准线程上下文类，可继承)
+- [tcpserver](tcpserver.md) (TCP服务端主要类，不可继承)
+- [tcpserver_io](tcpserver_io.md) (I/O 类，必须被继承)
+- [tcpserver_http](tcpserver_http.md) (HTTP 类继承 I/O 类，必须被继承)
+- [tcpserver_ws](tcpserver_ws.md) (WebSocket 类继承 HTTP 类，必须被继承)
 - 以后将加入更多的类和方法
 #### 开始编写一个简单echo服务端
 ```php
