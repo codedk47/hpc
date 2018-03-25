@@ -19,7 +19,7 @@
 	- bool [send(string $content[, int $opcode = 1[, bool $fin = true]])](tcpserver_ws.md#send) //发送一个数据给客户端
 	- array [frame_hi(void)](tcpserver_ws.md#frame_hi) //帧头信息
 	- bool [frame_fin(void)](tcpserver_ws.md#frame_fin) //帧头信息 fin （表示是否是尾帧）
-	- bool [frame_rsv(int $rsv)](tcpserver_ws.md#frame_rsv) //帧头信息 rsv
+	- mixed [frame_rsv(int $rsv)](tcpserver_ws.md#frame_rsv) //帧头信息 rsv
 	- int [frame_opcode(void)](tcpserver_ws.md#frame_opcode) //帧头信息 opcode （ 0 - 15 ）
 	- bool [frame_mask(void)](tcpserver_ws.md#frame_mask) //帧头信息 是否有 mask
 	- int [frame_length(void)](tcpserver_ws.md#frame_length) //帧内容长度
@@ -35,11 +35,141 @@ class myser extends tcpserver_ws
 {
 	function recv_frame()
 	{
-		return $this->send($this->frame_content());
+		$buffer = $this->frame_content();
+		//连续3帧发送，到终端后会自己合并完整帧
+		$this->send($buffer, 1, FALSE);
+		$this->send($buffer, 0, FALSE );
+		$this->send($buffer, 0, TRUE);
+		//发送一帧
+		$this->send($buffer);
+		return TRUE;
 	}
 }
 tcpserver(function(){
 	$this->io_class = 'myser';
 	$this->local_socket = 'tcp://*8080';
 });
+```
+#### frame_hi
+<pre>
+帧头信息
+</pre>
+```php
+class myser extends tcpserver_ws
+{
+	function recv_frame()
+	{
+		var_dump($this->frame_hi());
+		return TRUE;
+	}
+}
+```
+#### frame_fin
+<pre>
+帧头信息 fin
+</pre>
+```php
+class myser extends tcpserver_ws
+{
+	function recv_frame()
+	{
+		var_dump($this->frame_fin());
+		return TRUE;
+	}
+}
+```
+#### frame_rsv
+<pre>
+帧头信息 rsv，参数 1-3 返回 true 或者 false，其他返回 NULL
+</pre>
+```php
+class myser extends tcpserver_ws
+{
+	function recv_frame()
+	{
+		var_dump($this->frame_rsv(1));
+		return TRUE;
+	}
+}
+```
+#### frame_opcode
+<pre>
+帧头信息 opcode，返回值 0-15
+0x0 ：continuation frame
+0x1 ：text frame
+0x2 ：binary frame
+0x3 - 0x7 ：保留，for non-control frame
+0x8 ：close frame
+0x9 ：ping frame
+0xA ：pong frame
+0xB - 0xF ：保留，for control-frame
+</pre>
+```php
+class myser extends tcpserver_ws
+{
+	function recv_frame()
+	{
+		var_dump($this->frame_opcode());
+		return TRUE;
+	}
+}
+```
+#### frame_mask
+<pre>
+帧头信息 是否有 mask
+</pre>
+```php
+class myser extends tcpserver_ws
+{
+	function recv_frame()
+	{
+		var_dump($this->frame_mask());
+		return TRUE;
+	}
+}
+```
+#### frame_length
+<pre>
+帧内容长度，服务端目前只支持 65652 大小的数据帧，连接建立握手成功后向操作系统申请
+并不会每次帧都去动态申请内存，所以有大数据请发连续帧，用户并且自己写逻辑规则
+</pre>
+```php
+class myser extends tcpserver_ws
+{
+	function recv_frame()
+	{
+		var_dump($this->frame_length());
+		return TRUE;
+	}
+}
+```
+#### frame_content
+<pre>
+帧内容
+</pre>
+```php
+class myser extends tcpserver_ws
+{
+	function recv_frame()
+	{
+		var_dump($this->frame_content());
+		return TRUE;
+	}
+}
+```
+#### encode_frame
+<pre>
+将内容编码成帧，这个是一个预留 api 可以将数据编码成帧后调用 server 对象下 的 send_all 等方法发送给其连接
+应为只有 tcpserver_ws 类下的 send 方法会自动将内容编码为帧，其他发送方法并不会任何编码
+</pre>
+```php
+class myser extends tcpserver_ws
+{
+	function recv_frame()
+	{
+		$frame = $this->encode_frame('要发送的内容');
+		$this->server()->send_all($frame);
+		return TRUE;
+	}
+}
 ```
