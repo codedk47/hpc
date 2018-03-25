@@ -3,6 +3,8 @@
 <pre>
 这个类继承于 tcpserver_http 类，这是一个 websocket 服务端功能抽象类，用户可以继承该类来完成一个 websocket 服务端
 该类已覆盖了 tcpserver_http 类的 recv 和 send 方法
+服务端目前只支持 65652 大小的数据帧，连接建立握手成功后向操作系统申请
+并不会每次帧都去动态申请内存，所以有比较大的数据帧内容请发连续帧，用户并且自己写逻辑规则
 同时用户也必须实现 recv_frame 方法，websocket 服务端在接受到一个帧后会触发这个方法
 注意这个这个类的 send 方法回自动调用编码帧完成编码后在发送
 如果需要把数据发给其他连接需要用户自己手动调用编码帧后的数据在进行发送
@@ -66,7 +68,7 @@ class myser extends tcpserver_ws
 ```
 #### frame_fin
 <pre>
-帧头信息 fin
+帧头信息 fin，可以判断是否是最后一帧
 </pre>
 ```php
 class myser extends tcpserver_ws
@@ -130,8 +132,7 @@ class myser extends tcpserver_ws
 ```
 #### frame_length
 <pre>
-帧内容长度，服务端目前只支持 65652 大小的数据帧，连接建立握手成功后向操作系统申请
-并不会每次帧都去动态申请内存，所以有大数据请发连续帧，用户并且自己写逻辑规则
+帧内容长度
 </pre>
 ```php
 class myser extends tcpserver_ws
