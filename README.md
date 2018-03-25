@@ -8,6 +8,7 @@
 hps 是为了让 php 可以编写高性能的服务端而使用纯c语言开发的
 基于 Windows 平台 IOCP 网络事件驱动，多线程+非阻塞模式
 采用 PHP7.2.3 和 OpenSSL1.1.0g 源代码编译
+如果觉得好用请给我github上点个🌟
 </pre>
 - [下载 hpc-1.1.2-VC15-x64.zip](https://github.com/codedk47/hpc/raw/master/hpc-1.1.2-VC15-x64.zip)
 #### PHP extend declared classes
