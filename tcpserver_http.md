@@ -485,6 +485,23 @@ class simple_http_server extends tcpserver_http
 	}
 }
 ```
+#### send_chunked
+<pre>
+发送分块内容，成功返回 true，失败返回 false
+服务端内部实现了结尾机制，除非用户想发送后立即关闭才需要自己发送 chunked 结尾
+</pre>
+```php
+class simple_http_server extends tcpserver_http
+{
+	function recv_req()
+	{
+		$this->send_chunked('123');
+		$this->send_chunked('456');
+		$this->send_chunked('678');
+		return TRUE;
+	}
+}
+```
 #### send_file
 <pre>
 发送文件，该方法会自动判断请求 etag 值后在选择是否继续发送，成功返回 true，失败 false
