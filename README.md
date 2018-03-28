@@ -105,6 +105,23 @@ tcpserver(function()
 所以只要有线程在空闲的情况下绝对不会出现用户排队的情况，服务端也是独占地址模式，不是地址重用这也会增加一定安全性
 注意：这个机制区别于每个线程维护一个队列的服务端，如果处理10个用户刚好在同一个负责线程就不能有效解决效排队处理问题
 这个服务端其实就是一个很简单的服务端，并没有太多花哨操作方法，目前所有代码加起来可能不足4千行
-其中包括 IOCP基本网络库封装(OpsenSSL兼容)、hash_node、sync_list、嵌入PHP、5个PHP操作类扩展
+其中包括 IOCP基本网络库封装(OpenSSL兼容)、hash_node、sync_list、嵌入PHP、5个PHP操作类扩展
 除此之外并未含有其他任何库，所有代码目前也只是一个人完成，所以它很精简，也只能运行在 Windows 平台上
 </pre>
+```c
+//以下是这个服务端所使用的 socket 结构体
+typedef struct HPS_IOCP_SOCKET_T {
+	OVERLAPPED io;		//IOCP关键
+	SOCKET s;		//socket
+	BYTE ai[88];		//异步accept保留的本地地址和远程地址
+	UINT32 recv_len;	//WSARecv接收长度
+	WSABUF recv_buf;	//接收的数据，这里并没有用IOCP的数据完成机制所以就是0缓冲区数据
+	UINT32 recv_mod;	//用于WSARecv的控制标志
+	SSL *ssl;		//OpenSSL
+	UINT64 channel;		//频道
+	HPS_HASH_NODE ctx;	//用户保存的上下文
+	HPS_HASH_NODE node;	//全局链接表节点
+	CRITICAL_SECTION cs;	//暂时没用
+	volatile time_t lt;	//最后一次收发数据时间戳（秒），服务端踢除长时间未收发消息也是判断这里
+} HPS_IOCP_SOCKET;
+```
