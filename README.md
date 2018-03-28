@@ -92,3 +92,14 @@ tcpserver(function()
 比如预先建立mysql连接，当客户端请求查询数据直接 可以调用当前线程的mysql查询，减少socket建立与mysql握手过程
 当然 thread 也可以写个死循环让它去采集数据什么的
 </pre>
+#### 服务端流程
+```flow
+st=>start: Start
+op=>operation: Your Operation
+cond=>condition: Yes or No?
+e=>end
+
+st->op->cond
+cond(yes)->e
+cond(no)->op
+```
