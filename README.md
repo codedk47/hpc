@@ -33,7 +33,7 @@ class demo_io extends tcpserver_io //扩展一个标准的 I/O 类
 	{
 		//某些类会覆盖此函数比如 HTTP 类，但是一定有另外一个触发回调函数 比如 HTTP 类触发函数是 recv_req
 		$len = $this->read($buf, 1024); //读取当前 fd 数据
-		$this->send($buf); //写入当前 fd 数据
+		$this->send($buf); //发送数据给这个 fd
 		return TRUE; //任何时候在最后返回不为 true 都会立即断开链接
 	}
 	function __destruct() //任何时候 fd 异常断开连接后都会调用此函数
