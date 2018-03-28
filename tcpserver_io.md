@@ -26,6 +26,7 @@ class my_io_class_test extends tcpserver_io
 	- void [__unset(string $key)](tcpserver_io.md#__unset) //（php魔术方法）删除一条记录
 	- int [peek(string &$buffer, int $length)](tcpserver_io.md#peek) //窥视连接数据
 	- int [read(string &$buffer, int $length)](tcpserver_io.md#read) //读取连接数据
+	- int [send(string $buffer)](tcpserver_io.md#send) //发送连接数据
 	- int [write(string $buffer)](tcpserver_io.md#write) //写入连接数据
 	- bool [sendfile(string $filename)](tcpserver_io.md#sendfile) //向连接发送文件
 	- bool [end(void)](tcpserver_io.md#end) //向连接发送关闭发送信号
@@ -38,6 +39,12 @@ class my_io_class_test extends tcpserver_io
 	- string [ip_port(void)](tcpserver_io.md#ip_port) //获取连接的 IP 端口
 	- int [set_channel(string $name)](tcpserver_io.md#set_channel) //设置连接频道
 	- int [send_them(string $buffer)](tcpserver_io.md#send_them) //发送数据给除当前连接以外的所有连接
+	- bool [buffer_new(int $size)](tcpserver_io.md#buffer_new) //创建一个用户缓冲区
+	- int [buffer_add(void)](tcpserver_io.md#buffer_add) //将 socket 缓冲区数据读取到用户缓冲区
+	- string [buffer_cut(int $length)](tcpserver_io.md#buffer_cut) //裁剪出用户缓冲区数据
+	- int [buffer_pos(string $needle [, int $offset])](tcpserver_io.md#buffer_pos) //在用户缓冲区找特定字符串
+	- string [buffer_dup([bool $all = false])](tcpserver_io.md#buffer_dup) //导出用户缓冲区数据
+	- string [buffer_sub(int $start, int $length)](tcpserver_io.md#buffer_sub) //截取用户缓冲区数据
 	- bool [wait_recv(int $timeout)](tcpserver_io.md#wait_recv) //实验性，阻塞等待可读取事件
 - }
 #### __construct
@@ -96,7 +103,7 @@ class my_io_class_test extends tcpserver_io
 	function recv()
 	{
 		$len = $this->read($buf, 1024);
-		$this->write($this->name . $buf);
+		$this->send($this->name . $buf);
 		return TRUE;
 	}
 }
@@ -164,6 +171,23 @@ class my_io_class_test extends tcpserver_io
 	function recv()
 	{
 		$len = $this->read($buf, 128);
+		return TRUE;
+	}
+}
+```
+#### send
+<pre>
+发送数据给这个 fd，返回实际写入长度，在遇到错误时候返回 -1
+这个函数目前与 write 函数无任何区别，但是在未来的版本中不影响用户逻辑的情况下将变成异步发送机制
+如果用户期望某些逻辑确定需要使用同步发送机制请用 write 方法
+如果用户期望某些逻辑使用异步发送机制请用 send 代替，尽管它现在还不是异步的，以后可能就是异步的-_-b
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function recv()
+	{
+		$len = $this->send('最近还好吗？');
 		return TRUE;
 	}
 }
@@ -338,6 +362,139 @@ class my_io_class_test extends tcpserver_io
 	function recv()
 	{
 		$this->send_them('嗨！大家好');
+		return TRUE;
+	}
+}
+```
+#### buffer_new
+<pre>
+创建一个用户缓冲区，用户缓冲区只能创建一个，推荐写在连接最终确定生效后，成功返回 true，失败返回 false
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function __construct()
+	{
+		return $this->buffer_new(1024); //向操作系统申请一个1024字节的缓冲区
+	}
+}
+```
+#### buffer_add
+<pre>
+将 socket 缓冲区数据读取到用户缓冲区，返回当前缓冲区数据长度
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function __construct()
+	{
+		return $this->buffer_new(1024); //向操作系统申请一个1024字节的缓冲区
+	}
+	function recv()
+	{
+		$len = $this->buffer_add(); //使用这个函数来代替 read 或 peek 方法
+		var_dump($len);
+		return TRUE;
+	}
+}
+```
+#### buffer_cut
+<pre>
+裁剪出用户缓冲区数据，下面是一个固定长度包的处理列子
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function __construct()
+	{
+		return $this->buffer_new(8); //向操作系统申请一个8字节的缓冲区
+	}
+	function recv()
+	{
+		if($this->buffer_add() < 8) //使用这个函数来代替 read 或 peek 方法
+		{
+			//小于8字节数据继续读取
+			return TRUE;
+		}
+		$buf = $this->buffer_cut(8); //裁剪出8个字节数据
+		var_dump($buf);
+		return TRUE;
+	}
+}
+```
+#### buffer_pos
+<pre>
+在用户缓冲区找特定字符串，二进制安全，参数2是需要偏移值，找到返回位置 + 需要查找的字符串长度，其他返回 -1，可以配合 buffer_cut 使用
+默认为上次缓冲区数据偏移 - 需要查找的字符串，这样有助于搜索速度找过的数据没有必要在从头找一遍，除非用户自己设定偏移值
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function __construct()
+	{
+		return $this->buffer_new(8192); //向操作系统申请一个8192字节的缓冲区
+	}
+	function recv()
+	{
+		$len = $this->buffer_add(); //使用这个函数来代替 read 或 peek 方法
+		$pos = $this->buffer_pos("\r\n"); //找 "\r\n" 出现处
+		if($pos !== -1) //判断是否找到数据
+		{
+			$buf = $this->buffer_cut($pos); //配合 buffer_cut 使用
+			var_dump($buf); //这样就不会出现粘包现象了
+		}
+		return TRUE;
+	}
+}
+```
+#### buffer_dup
+<pre>
+导出用户缓冲区数据，默认只导出这次接收到的数据，参数2为 true 时将导出所有缓冲区数据，但是对于大缓冲区不建议这样做
+其实这个方法是留给开发协议的时候检查数据用的任何时候导出大缓冲区数据都是不好的行为
+如果只需要部分数据可以看看 buffer_sub 方法
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function __construct()
+	{
+		return $this->buffer_new(8192); //向操作系统申请一个8192字节的缓冲区
+	}
+	function recv()
+	{
+		$len = $this->buffer_add(); //使用这个函数来代替 read 或 peek 方法
+		var_dump($this->buffer_dup()); //查看这次接收到什么数据
+		return TRUE;
+	}
+}
+```
+#### buffer_sub
+<pre>
+截取用户缓冲区数据，2个参数都是必填，参数1偏移值，参数2需要多少数据
+如果你看到这里这个几个 buffer_ 开头的方法几乎能完成一般的协议关键包处理
+后续如果还需要缓冲区的需求，请用 php 的临时文件机制处理吧，记得在析构函数里删除这个零时文件
+想～～～，不对你在开发什么服务端？？需要这么复杂的数据包处理！！！
+</pre>
+```php
+class my_io_class_test extends tcpserver_io
+{
+	function __construct()
+	{
+		return $this->buffer_new(8192); //向操作系统申请一个8192字节的缓冲区
+	}
+	function recv()
+	{
+		$len = $this->buffer_add(); //使用这个函数来代替 read 或 peek 方法
+		if(len > 4) //判断用户缓冲区时候有足够多的数据
+		{
+			$head = $this->buffer_sub(0, 4); //截取用户缓冲区偏移从0开始后的4个长度数据
+			$need = unpack('N', $head); //转化长度，确定后续需要读取多少数据
+			if($len >= $need) //判断用户缓冲区数据长度是否达到有效负载数据长度
+			{
+				$data = $this->buffer_cut($need); //裁剪出用户缓冲区数据
+				// $this->my_callback($data); //开始调用自己写好的逻辑机制
+			}
+		}
 		return TRUE;
 	}
 }
