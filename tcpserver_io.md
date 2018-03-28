@@ -480,15 +480,15 @@ class my_io_class_test extends tcpserver_io
 {
 	function __construct()
 	{
-		return $this->buffer_new(8192); //向操作系统申请一个8192字节的缓冲区
+		return $this->buffer_new(65538); //向操作系统申请一个65538字节的缓冲区
 	}
 	function recv()
 	{
 		$len = $this->buffer_add(); //使用这个函数来代替 read 或 peek 方法
-		if(len > 4) //判断用户缓冲区时候有足够多的数据
+		if(len >= 2) //判断用户缓冲区时候有足够多的数据
 		{
-			$head = $this->buffer_sub(0, 4); //截取用户缓冲区偏移从0开始后的4个长度数据
-			$need = unpack('N', $head); //转化长度，确定后续需要读取多少数据
+			$head = $this->buffer_sub(0, 2); //截取用户缓冲区偏移从0开始后的4个长度数据
+			$need = unpack('S', $head); //转化长度，确定后续需要读取多少数据
 			if($len >= $need) //判断用户缓冲区数据长度是否达到有效负载数据长度
 			{
 				$data = $this->buffer_cut($need); //裁剪出用户缓冲区数据
