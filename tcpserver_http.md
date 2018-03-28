@@ -14,7 +14,6 @@
 	- **abstract** recv_req(void) //用户必须实现这个方法
 	- `/* 方法 */`
 	- bool recv(void) //内部核心逻辑机制（请不要调用和覆盖该方法，可能更加开放 http 抽象类而预留）
-	- bool send(string $buffer) //内部核心发送机制（请不要覆盖该方法，发送 http 内容）
 	- string [req_head([bool $all = false])](tcpserver_http.md#req_head) //获取请求头内容
 	- string [req_method(void)](tcpserver_http.md#req_method) //获取请求方法如 GET POST HEAD 等
 	- string [req_url(void)](tcpserver_http.md#req_url) //获取请求 URL
@@ -38,8 +37,9 @@
 	- bool [res_type(string $content_type)](tcpserver_http.md#res_type) //响应头信息添加内容类型
 	- bool [res_gzip(void)](tcpserver_http.md#res_gzip) //响应头信息添加 gzip
 	- bool [res_etag(string $etag)](tcpserver_http.md#res_etag) //响应头信息添加 etag 值
-	- bool [set_cookie(string $name [, string $value = '' [, int $expire = 0 [, string $path = '' [, string $domain = '' [, bool $secure = false [, bool $httponly = false ]]]]]]](tcpserver_http.md#set_cookie) //响应头添加 cookie 设置
 	- bool [res_send(void)](tcpserver_http.md#res_send) //发送响应头信息
+	- bool [set_cookie(string $name [, string $value = '' [, int $expire = 0 [, string $path = '' [, string $domain = '' [, bool $secure = false [, bool $httponly = false ]]]]]]](tcpserver_http.md#set_cookie) //响应头添加 cookie 设置
+	- bool [send_chunked(string $buffer)](tcpserver_http.md#send_chunked) //发送分块
 	- bool [send_file(string $filename)](tcpserver_http.md#send_file) //发送文件
 	- bool [send_echo(callable $callback)](tcpserver_http.md#send_echo) //发送回调里 php 所有输出到 http 内容
 	- bool [send_403(void)](tcpserver_http.md#send_403) //发送 403 状态
@@ -55,7 +55,7 @@ class simple_http_server extends tcpserver_http
 {
 	function recv_req()
 	{
-		$this->send($this->req_head(TRUE));
+		$this->send_chunked($this->req_head(TRUE));
 		return TRUE;
 	}
 }
@@ -69,7 +69,7 @@ class simple_http_server extends tcpserver_http
 {
 	function recv_req()
 	{
-		$this->send('用户请求方法是：' . $this->req_method());
+		$this->send_chunked('用户请求方法是：' . $this->req_method());
 		return TRUE;
 	}
 }
@@ -83,7 +83,7 @@ class simple_http_server extends tcpserver_http
 {
 	function recv_req()
 	{
-		$this->send('用户请求 URL 是：' . $this->req_url());
+		$this->send_chunked('用户请求 URL 是：' . $this->req_url());
 		return TRUE;
 	}
 }
@@ -113,7 +113,7 @@ class simple_http_server extends tcpserver_http
 {
 	function recv_req()
 	{
-		$this->send($this->req_query('key') ?? '没有key字段');
+		$this->send_chunked($this->req_query('key') ?? '没有key字段');
 		return TRUE;
 	}
 }
@@ -141,7 +141,7 @@ class simple_http_server extends tcpserver_http
 {
 	function recv_req()
 	{
-		$this->send('当前请求的 HTTP 协议版本是：' . $this->req_ver());
+		$this->send_chunked('当前请求的 HTTP 协议版本是：' . $this->req_ver());
 		return TRUE;
 	}
 }
@@ -158,7 +158,7 @@ class simple_http_server extends tcpserver_http
 		//对于请求头并不是所有浏览器和某些爬虫或者个人写的数据抓去等都会设置某些头
 		//在查询头尽量做好判断
 		$result = $this->req_find('Accept-Language') ?? '火星语？';
-		$this->send('当前请求语言是：' . $result);
+		$this->send_chunked('当前请求语言是：' . $result);
 		return TRUE;
 	}
 }
@@ -173,7 +173,7 @@ class simple_http_server extends tcpserver_http
 	function recv_req()
 	{
 		$result = $this->req_gzip_on() ? '开启' : '关闭';
-		$this->send('当前请求 gzip 支持：' . $result);
+		$this->send_chunked('当前请求 gzip 支持：' . $result);
 		return TRUE;
 	}
 }
@@ -202,7 +202,7 @@ class simple_http_server extends tcpserver_http
 		else
 		{
 			//如果不一致我们就发送数据
-			$this->send($content);
+			$this->send_chunked($content);
 		}
 		return TRUE;
 	}
@@ -218,7 +218,7 @@ class simple_http_server extends tcpserver_http
 	function recv_req()
 	{
 		$result = $this->get_cookie('name') ?? '没找到 name 内容';
-		$this->send('Cookie: ' . $result);
+		$this->send_chunked('Cookie: ' . $result);
 		return TRUE;
 	}
 }
@@ -256,7 +256,7 @@ class simple_http_server extends tcpserver_http
 			return $this->get_content(3200000000,function() //测试接收3G大小数据
 			{
 				//当数据接收完毕时候会回调这个函数
-				$this->send('接收内容大小：' . $this->get_content_offset());
+				$this->send_chunked('接收内容大小：' . $this->get_content_offset());
 				
 				$post_raw = $this->get_content_buffer(); //获取原始内容
 				
@@ -292,7 +292,7 @@ class simple_http_server extends tcpserver_http
 {
 	function recv_req()
 	{
-		$this->send('当前请求后续输入内容偏移值：' . $this->get_content_offset());
+		$this->send_chunked('当前请求后续输入内容偏移值：' . $this->get_content_offset());
 		return TRUE;
 	}
 }
@@ -306,7 +306,7 @@ class simple_http_server extends tcpserver_http
 {
 	function recv_req()
 	{
-		$this->send($this->get_content_buffer()); //千万不要将上传的大文件打印到屏幕，你懂的
+		$this->send_chunked($this->get_content_buffer()); //千万不要将上传的大文件打印到屏幕，你懂的
 		return TRUE;
 	}
 }
@@ -323,7 +323,7 @@ class simple_http_server extends tcpserver_http
 {
 	function recv_req()
 	{
-		$this->send($this->get_content_buffer()); //千万不要将上传的大文件打印到屏幕，你懂的
+		$this->send_chunked($this->get_content_buffer()); //千万不要将上传的大文件打印到屏幕，你懂的
 		return TRUE;
 	}
 }
@@ -337,7 +337,7 @@ class simple_http_server extends tcpserver_http
 {
 	function recv_req()
 	{
-		$this->send($this->res_head());
+		$this->send_chunked($this->res_head());
 		return TRUE;
 	}
 }
@@ -353,7 +353,7 @@ class simple_http_server extends tcpserver_http
 	function recv_req()
 	{
 		$this->res_append('X-Address-Info: ' . $this->ip_info());
-		$this->send('看看头信息是否有 X-Address-Info 项');
+		$this->send_chunked('看看头信息是否有 X-Address-Info 项');
 		return TRUE;
 	}
 }
@@ -372,7 +372,7 @@ class simple_http_server extends tcpserver_http
 		$content = '我是很长的内容';
 		$this->res_length(strlen($content)); //响应头信息添加内容长度
 		$this->res_send(); //发送响应头信息
-		$this->send($content); //发送内容，这样就绕开了 chunked 方式
+		$this->send_chunked($content); //发送内容，这样就绕开了 chunked 方式
 		return TRUE;
 	}
 }
@@ -387,7 +387,7 @@ class simple_http_server extends tcpserver_http
 	function recv_req()
 	{
 		$this->res_type('text/plain; charset=utf-8');
-		$this->send("文本信息\n换行显示");
+		$this->send_chunked("文本信息\n换行显示");
 		return TRUE;
 	}
 }
@@ -415,11 +415,11 @@ class simple_http_server extends tcpserver_http
 		if($this->req_gzip_on()) //先判断对方浏览器支不支持，别一顿乱操作发现白搭
 		{
 			$this->res_gzip(); //响应头信息添加 gzip
-			$this->send(gzencode($content)); //gzip 压缩后发送
+			$this->send_chunked(gzencode($content)); //gzip 压缩后发送
 		}
 		else
 		{
-			$this->send($content);
+			$this->send_chunked($content);
 		}
 		return TRUE;
 	}
@@ -435,7 +435,7 @@ class simple_http_server extends tcpserver_http
 	function recv_req()
 	{
 		$this->res_type('text/plain; charset=utf-8');
-		$this->send("文本信息\n换行显示");
+		$this->send_chunked("文本信息\n换行显示");
 		return TRUE;
 	}
 }
@@ -451,7 +451,7 @@ class simple_http_server extends tcpserver_http
 	{
 		$content = '需要发送的内容';
 		$this->res_etag($content); //响应头信息添加 etag 值
-		$this->send($content);
+		$this->send_chunked($content);
 		return TRUE;
 	}
 }
@@ -480,7 +480,7 @@ class simple_http_server extends tcpserver_http
 	function recv_req()
 	{
 		$this->set_cookie('name', 'value');
-		$this->send('添加了 cookie');
+		$this->send_chunked('添加了 cookie');
 		return TRUE;
 	}
 }
