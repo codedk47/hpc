@@ -10,7 +10,7 @@ hps 是为了让 php 可以编写高性能的服务端而使用纯c语言开发�
 采用 PHP7.2.3 和 OpenSSL1.1.0g 源代码编译
 如果觉得好用请给我github上点个🌟
 </pre>
-- [下载 hpc-1.1.2-VC15-x64.zip](https://github.com/codedk47/hpc/raw/master/hpc-1.1.2-VC15-x64.zip)
+- [下载 hpc-1.1.3-VC15-x64.zip](https://github.com/codedk47/hpc/raw/master/hpc-1.1.3-VC15-x64.zip)
 #### PHP extend declared classes
 - [thread](thread.md) (标准线程上下文类，可继承)
 - [tcpserver](tcpserver.md) (TCP服务端主要类，不可继承)
@@ -33,7 +33,7 @@ class demo_io extends tcpserver_io //扩展一个标准的 I/O 类
 	{
 		//某些类会覆盖此函数比如 HTTP 类，但是一定有另外一个触发回调函数 比如 HTTP 类触发函数是 recv_req
 		$len = $this->read($buf, 1024); //读取当前 fd 数据
-		$this->write($buf); //写入当前 fd 数据
+		$this->send($buf); //写入当前 fd 数据
 		return TRUE; //任何时候在最后返回不为 true 都会立即断开链接
 	}
 	function __destruct() //任何时候 fd 异常断开连接后都会调用此函数
@@ -56,7 +56,7 @@ class demo_http extends tcpserver_http
 {
  	function recv_req()
 	{
-		$this->send('hello php server!!!');
+		$this->send_chunked('hello php server!!!');
 		return TRUE;
 	}
 }
@@ -74,7 +74,7 @@ class demo_ws extends tcpserver_ws
 	function recv_frame()
 	{
 		$frame = $this->frame_content();
-		return $this->send($frame);
+		return $this->send_frame($frame);
 	}
 }
 tcpserver(function()
