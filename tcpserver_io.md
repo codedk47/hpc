@@ -401,6 +401,7 @@ class my_io_class_test extends tcpserver_io
 #### buffer_cut
 <pre>
 裁剪出用户缓冲区数据，下面是一个固定长度包的处理列子
+注意：当使用 buffer_cut 方法后数据才被真正从用户缓冲区裁剪移除，目前也就只有这个一个方法
 </pre>
 ```php
 class my_io_class_test extends tcpserver_io
@@ -496,7 +497,7 @@ class my_io_class_test extends tcpserver_io
 				// $this->my_callback($data); //开始调用自己写好的逻辑机制
 			}
 		}
-		return TRUE;
+		return $len < 65538; //用户缓冲区还有空间，当使用 buffer_cut 方法后数据才被真正从用户缓冲移除
 	}
 }
 ```
