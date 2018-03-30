@@ -1,6 +1,6 @@
 #### Hypertext Preprocessor Console（hpc）
 <pre>
-该项目暂时不开源有兴趣可以加Q群（456357348）技术讨论吹牛B等-_-b
+该项目暂时不开源有兴趣可以加Q群（456357348）提供技术支持吹牛B等-_-b
 目前服务端基础功能已经过测试免费提供使用，希望能得到大家的想法与支持
 </pre>
 #### Hypertext Preprocessor Server（hps）
@@ -10,7 +10,7 @@ hps 是为了让 php 可以写 tcp 服务端而使用纯c语言开发的应用
 采用 PHP7.2.3 和 OpenSSL1.1.0g 源代码编译
 如果觉得好用请给我github上点个🌟
 </pre>
-- [下载 hpc-1.1.3-VC15-x64.zip](https://github.com/codedk47/hpc/raw/master/hpc-1.1.3-VC15-x64.zip)
+- [下载 hpc-1.1.3-VC15-x64.zip](https://github.com/codedk47/hpc/raw/master/hpc-1.1.3-VC15-x64.zip) sha1(**a8ba2bf8125f9da37d5207bee6abb8affc76c765**)
 #### PHP extend declared classes
 - [thread](thread.md) (标准线程上下文类，可继承)
 - [tcpserver](tcpserver.md) (TCP服务端主要类，不可继承)
