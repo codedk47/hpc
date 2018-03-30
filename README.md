@@ -10,7 +10,7 @@ hps 是为了让 php 可以写 tcp 服务端而使用纯c语言开发的应用
 采用 PHP7.2.3 和 OpenSSL1.1.0g 源代码编译
 如果觉得好用请给我github上点个🌟
 </pre>
-- [下载 hpc-1.1.3-VC15-x64.zip](https://github.com/codedk47/hpc/raw/master/hpc-1.1.3-VC15-x64.zip) sha256: **4cb54332bbc3f2e5dc72a60ca07fd72985e93d996645f4c9ae61119856da1ed2**
+- [下载 hpc-1.1.3-VC15-x64.zip](https://github.com/codedk47/hpc/raw/master/hpc-1.1.3-VC15-x64.zip) sha256:4cb54332bbc3f2e5dc72a60ca07fd72985e93d996645f4c9ae61119856da1ed2
 #### PHP extend declared classes
 - [thread](thread.md) (标准线程上下文类，可继承)
 - [tcpserver](tcpserver.md) (TCP服务端主要类，不可继承)
