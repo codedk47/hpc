@@ -6,7 +6,7 @@
 #### Hypertext Preprocessor Server（hps）
 <pre>
 hps 是为了让 php 可以写 tcp 服务端而使用纯c语言开发的应用
-基于 Windows 平台 IOCP 网络事件驱动，多线程+非阻塞模式
+基于 Windows 平台 IOCP 网络事件驱动，非阻塞模式 + 多线程
 采用 PHP7.2.3 和 OpenSSL1.1.0g 源代码编译
 如果觉得好用请给我github上点个🌟
 </pre>
