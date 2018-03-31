@@ -264,7 +264,7 @@ class my_io_class_test extends tcpserver_io
 	function recv()
 	{
 		$len = $this->read($buf, 1024);
-		$this->server()->sed_all($buf);
+		$this->server()->send_all($buf);
 		return TRUE;
 	}
 }
@@ -279,7 +279,7 @@ class my_io_class_test extends tcpserver_io
 	function recv()
 	{
 		$len = $this->read($buf, 1024);
-		$this->server()->sed_here($this->server()->get_connects(), $buf);
+		$this->server()->send_here($this->server()->get_connects(), $buf);
 		return TRUE;
 	}
 }
