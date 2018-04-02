@@ -323,7 +323,7 @@ class simple_http_server extends tcpserver_http
 {
 	function recv_req()
 	{
-		$this->send_chunked($this->get_content_buffer()); //千万不要将上传的大文件打印到屏幕，你懂的
+		print_r($this->get_content_format());
 		return TRUE;
 	}
 }
@@ -421,21 +421,6 @@ class simple_http_server extends tcpserver_http
 		{
 			$this->send_chunked($content);
 		}
-		return TRUE;
-	}
-}
-```
-#### res_type
-<pre>
-响应头信息添加内容类型，服务端默认文档类型 text/html; charset=utf-8
-</pre>
-```php
-class simple_http_server extends tcpserver_http
-{
-	function recv_req()
-	{
-		$this->res_type('text/plain; charset=utf-8');
-		$this->send_chunked("文本信息\n换行显示");
 		return TRUE;
 	}
 }
